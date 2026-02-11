@@ -1,0 +1,41 @@
+.head{
+    font-size: larger;
+    font-family: cursive;
+    color: rgb(180, 124, 231);
+}
+
+.container{
+    margin-top: 15px;
+    width: 40%;
+    justify-content: center;
+    border-radius: 8px; /* optional rounded corners */
+    border: rgb(31, 30, 29);
+    box-shadow: 0 8px 6px rgba(0, 0, 0, 0.2); /* shadow effect */
+
+}
+.select_menu{
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+.box{
+    border:solid rgb(218, 207, 207);
+    border-radius: 50px;
+    width: 100%;
+}
+
+.button {
+    background-color:rgb(88, 26, 146);
+    width:100%;
+    border-radius: 50px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}

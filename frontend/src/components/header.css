@@ -1,0 +1,39 @@
+header {
+    height:60px;
+    background-color: #ffffff; /* ensure header is visible so radius and shadow show */
+    border-radius: 10px; /* rounded corners */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12); /* subtle black shadow */
+    display:flex;
+    align-items: center;
+}
+
+header ul {
+    display:flex;
+    justify-content: space-between;
+    padding-right: 30px;
+    width: 100%;
+    margin: 0;
+    list-style: none;
+}
+
+/* Brand styling */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.brand-icon {
+    font-size: 1.6rem;
+}
+
+.brand-text {
+    font-weight: 600;
+}
+
+/* Nav items (Privacy, Help) spaced by 30px */
+.nav-items {
+    display: flex;
+    gap: 20px;
+    
+}

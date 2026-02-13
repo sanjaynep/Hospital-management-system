@@ -37,7 +37,7 @@ export default function Signup() {
             <Form.Control className='box' {...register("fullname", {
               required: true, maxLength: {
                 value: 20,
-                message: "Name cannot be grater then 20 letters"
+                message: "Name cannot be greater then 20 letters"
               },
               minLength: {
                 value: 2,
@@ -101,39 +101,36 @@ export default function Signup() {
                 <Form.Label>Medical license number:</Form.Label>
                 <Form.Control className='box' {...register("license_no", {
                   required: role === "doctor" ? "License number is required" : false,
+
                   minLength: {
                     value: 3,
                     message: "License number must be at least 3 digits"
                   }
                 }
                 )
-                } type="number" />
+                } type="number" min={0} />
               </Form.Group>
               {errors.license_no && <p className='text-danger' role="alert">{errors.license_no.message}</p>}
 
               <Form.Label>Qualification/Degree:</Form.Label>
               <Form.Select className="select_menu" {...register("qualification", { required: role === "doctor" ? "Degree is required" : false })} aria-label="Default select example">
-                <option value="" disabled selected hidden >Open this select menu</option>
-                <option value="mbbs">MBBS (Bachelor of Medicine, Bachelor of Surgery)</option>
-                <option value="dom">MD (Doctor of Medicine)</option>
-                <option value="doom">DO (Doctor of Osteopathic Medicine)</option>
-                <option value="bds/dds">BDS / DDS (Bachelor/Doctor of Dental Surgery)</option>
-                <option value="pharmd">PharmD (Doctor of Pharmacy)</option>
-                <option value="bsn">BSN (Bachelor of Science in Nursing)</option>
-                <option value="dpt">DPT (Doctor of Physical Therapy)</option>
-                <option value="mls">MLS (Bachelor of Medical Laboratory Science)</option>
-                <option value="mph">MPH (Master of Public Health)</option>
-                <option value="msc">MSc in Biomedical Sciences</option>
-                <option value="mch">MCh (Master of Chirurgiae)</option>
-                <option value="dm">DM (Doctorate of Medicine)</option>
-                <option value="otd">OTD (Doctor of Occupational Therapy)</option>
-                <option value="other">Allied Health Degrees (e.g., Radiology, Physiotherapy, Nutrition, Speech Therapy)</option>
+                <option value="general_physician">General Physician (MBBS, MD Internal Medicine)</option>
+                <option value="dermatology">Dermatology (MD Dermatology)</option>
+                <option value="cardiologist">Cardiologist (DM Cardiology)</option>
+                <option value="emergency">Emergency Specialist (ER Physician, Trauma Specialist)</option>
               </Form.Select>
               {errors.qualification && <p className='text-danger' role="alert">{errors.qualification.message}</p>}
 
               <Form.Group className="mb-3 " controlId="exampleForm.ControlInput1">
                 <Form.Label>Year of experience</Form.Label>
-                <Form.Control className='box' {...register("experience", { required: role === "doctor" ? "License number is required" : false, })} type="number" />
+                <Form.Control className='box' {...register("experience", {
+                  required: role === "doctor" ? "License number is required" : false,
+                  min: {
+                    value: 0,
+                    message: "Negative numbers are not allowed"
+                  }
+
+                })} type="number" min={0} />
               </Form.Group>
               {errors.experience && <p className='text-danger' role="alert">{errors.experience.message}</p>}
             </>)}

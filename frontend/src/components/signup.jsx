@@ -108,18 +108,31 @@ export default function Signup() {
                   }
                 }
                 )
-                } type="number" min={0} />
+                } type="text"  />
               </Form.Group>
               {errors.license_no && <p className='text-danger' role="alert">{errors.license_no.message}</p>}
 
-              <Form.Label>Qualification/Degree:</Form.Label>
-              <Form.Select className="select_menu" {...register("qualification", { required: role === "doctor" ? "Degree is required" : false })} aria-label="Default select example">
+              <Form.Label>Specialization:</Form.Label>
+              <Form.Select className="select_menu" {...register("specialization", { required: role === "doctor" ? "Specialization is required" : false })} aria-label="Default select example">
                 <option value="general_physician">General Physician (MBBS, MD Internal Medicine)</option>
                 <option value="dermatology">Dermatology (MD Dermatology)</option>
                 <option value="cardiologist">Cardiologist (DM Cardiology)</option>
                 <option value="emergency">Emergency Specialist (ER Physician, Trauma Specialist)</option>
               </Form.Select>
               {errors.qualification && <p className='text-danger' role="alert">{errors.qualification.message}</p>}
+               
+                <Form.Group className="mb-3 " controlId="exampleForm.ControlInput1">
+                <Form.Label>Contact No:</Form.Label>
+                <Form.Control className='box' {...register("contact", {
+                  required: role === "doctor" ? "Contact number is required" : false,
+                  min: {
+                    value: 2,
+                    message: "Contact numbers cannot be less then 2 "
+                  }
+
+                })} type="text" />
+              </Form.Group>
+              {errors.experience && <p className='text-danger' role="alert">{errors.contact.message}</p>}
 
               <Form.Group className="mb-3 " controlId="exampleForm.ControlInput1">
                 <Form.Label>Year of experience</Form.Label>
@@ -129,7 +142,6 @@ export default function Signup() {
                     value: 0,
                     message: "Negative numbers are not allowed"
                   }
-
                 })} type="number" min={0} />
               </Form.Group>
               {errors.experience && <p className='text-danger' role="alert">{errors.experience.message}</p>}

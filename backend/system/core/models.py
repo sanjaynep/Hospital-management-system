@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager, PermissionsMixin
-from .managers import UserManager
+
 
 
 class UserManager(BaseUserManager):
@@ -61,12 +61,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
 
     # Doctor-only fields
-    contact_number = models.CharField(max_length=15)
+    contact = models.CharField(max_length=15, null=True, blank=True)
     specialization = models.CharField(max_length=255, null=True, choices=SPECIALIZATION_CHOICES,blank=True)
-    medical_license_number = models.CharField(max_length=100,unique=True, null=True,  blank=True)
+    license_no = models.CharField(max_length=100,unique=True, null=True,  blank=True)
     experience = models.PositiveIntegerField(null=True, blank=True)
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)

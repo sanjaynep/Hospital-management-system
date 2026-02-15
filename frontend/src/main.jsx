@@ -1,11 +1,57 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 import './index.css'
 import App from './App.jsx'
+import Signup from './components/signup.jsx'
+import Login from './components/login.jsx'
+import ActivateAccount from './components/activate_html.jsx'
+import DAshboard from './components/profile.jsx';
+import ProtectedRoute from "./protectedroute.jsx";
+import Emailbox from './components/email_form.jsx';
+import New_password from './components/new_password.jsx';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+  },
+  {
+    path: "/register",
+    element: <Signup />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/activate/:uid/:token",
+    element: <ActivateAccount />,
+  },
+  {
+    path:"/profile",
+    element:(
+      <ProtectedRoute>
+       <DAshboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/reset/:uid/:token",
+    element: <New_password />,
+  },
+  {
+    path: "/resetpassword",
+    element: <Emailbox/>,
+  },
+
+]);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </StrictMode>,
 )

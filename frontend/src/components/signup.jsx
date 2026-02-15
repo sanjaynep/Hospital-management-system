@@ -1,27 +1,94 @@
-import Form from 'react-bootstrap/Form';
+import { useState } from "react";
 import { useForm } from "react-hook-form"
+import { Link } from "react-router-dom";
+import Form from 'react-bootstrap/Form';
+import axios from "axios";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Header from "./header";
+
+
 import './signup.css';
 
 
-
 export default function Signup() {
+ const [show, setShow] = useState({ newP: false, confirm: false });
+
+  const [message, setMessage] = useState({ text: "", type: "" });
+
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors ,isSubmitting},
   } = useForm();
 
   const role = watch("role");
 
+  const onSubmit = async (data) => {
+    setMessage({ text: "", type: "" });
+    try {
+      const formData = new FormData();
+      formData.append('email', data.email);
+      formData.append('fullname', data.fullname);
+      formData.append('password', data.password);
+      formData.append('confirmpassword', data.confirmpassword);
+      formData.append('role', data.role);
+      formData.append('gender', data.gender);
+      if (data.profile && data.profile.length > 0) formData.append('profile', data.profile[0]);
+      if (data.license_no) formData.append('license_no', data.license_no);
+      if (data.specialization) formData.append('specialization', data.specialization);
+      if (data.contact) formData.append('contact', data.contact);
+      if (data.experience !== undefined && data.experience !== null) formData.append('experience', data.experience);
+
+      const response = await axios.post("http://127.0.0.1:8000/api/user/register/", formData, {
+        headers: { /* Let axios set Content-Type for multipart */ },
+      });
+      setMessage({ text: response.data.msg, type: "success" });
+    } catch (err) {
+      const errorData = err.response?.data;
+      let errorMessage = "Registration failed";
+
+      if (errorData?.errors) {
+        const errors = errorData.errors;
+        // Prefer non-field or relevant field messages in order
+        if (errors.non_field_errors) {
+          errorMessage = Array.isArray(errors.non_field_errors) ? errors.non_field_errors[0] : errors.non_field_errors;
+        } else if (errors.email) {
+          errorMessage = Array.isArray(errors.email) ? errors.email[0] : errors.email;
+        } else if (errors.password) {
+          errorMessage = Array.isArray(errors.password) ? errors.password[0] : errors.password;
+        } else if (errors.confirmpassword) {
+          errorMessage = Array.isArray(errors.confirmpassword) ? errors.confirmpassword[0] : errors.confirmpassword;
+        } else if (errors.fullname) {
+          errorMessage = Array.isArray(errors.fullname) ? errors.fullname[0] : errors.fullname;
+        } else {
+          const firstField = Object.keys(errors)[0];
+          const firstVal = errors[firstField];
+          errorMessage = Array.isArray(firstVal) ? firstVal[0] : firstVal;
+        }
+      } else if (errorData?.msg) {
+        errorMessage = errorData.msg;
+      }
+
+      setMessage({ text: errorMessage, type: "error" });
+    }
+  };
+
+
   return (
     <>
-      <div className="container ">
+    <Header />
+      <div className="container signup-container">
+        {message.text && (
+          <div className={`alert ${message.type === "success" ? "alert-success" : "alert-danger"} mx-5`}>
+            {message.text}
+          </div>
+        )}
         <p className='head'>Create Account</p>
-        <Form onSubmit={handleSubmit((data) => console.log(data))}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Label>Create account as:</Form.Label>
-          <Form.Select className="select_menu" {...register("role", { required: "your role is required" })} aria-label="Default select example">
-            <option value="" disabled selected hidden >Open this select menu</option>
+          <Form.Select defaultValue="" className="select_menu" {...register("role", { required: "your role is required" })} aria-label="Default select example">
+            <option value="" disabled hidden >Open this select menu</option>
             <option value="user">User</option>
             <option value="doctor">Doctor</option>
           </Form.Select>
@@ -62,33 +129,49 @@ export default function Signup() {
 
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Password</Form.Label>
-            <Form.Control className='box' {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 8,
-                message: "Password must be at least 8 characters"
-              },
-              pattern: {
-                value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])/,
-                message: "Password must include uppercase, lowercase, number, and special character"
-              }
-            })} type="password" />
+            <div className="password-wrapper">
+              <Form.Control className='box' {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters"
+                },
+                pattern: {
+                  value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])/,
+                  message: "Password must include uppercase, lowercase, number, and special character"
+                }
+              })}  type={show.newP ? 'text' : 'password'} />
+              <span
+                className="toggle-icon"
+                onClick={() => setShow(s => ({ ...s, newP: !s.newP }))}
+              >
+                 {show.newP ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
           </Form.Group>
           {errors.password && <p className='text-danger' role="alert">{errors.password.message}</p>}
 
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Confirm password</Form.Label>
-            <Form.Control className='box' {...register("confirmpassword", {
-              required: "Please confirm your password",
-              validate: (value) =>
-                value === watch("password") || "Passwords do not match"
-            })} type="password" />
+            <div className="password-wrapper">
+              <Form.Control className='box' {...register("confirmpassword", {
+                required: "Please confirm your password",
+                validate: (value) =>
+                  value === watch("password") || "Passwords do not match"
+              })} type={show.confirm ? "text" : "password"} />
+              <span
+                className="toggle-icon"
+                 onClick={() => setShow(s => ({ ...s, confirm: !s.confirm }))}
+              >
+               {show.confirm ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
           </Form.Group>
           {errors.confirmpassword && <p className='text-danger' role="alert">{errors.confirmpassword.message}</p>}
 
           <Form.Label>Gender</Form.Label>
-          <Form.Select className="select_menu" {...register("gender", { required: "Gender is required" })} aria-label="Default select example">
-            <option value="" disabled selected hidden >Open this select menu</option>
+          <Form.Select defaultValue="" className="select_menu" {...register("gender", { required: "Gender is required" })} aria-label="Default select example">
+            <option value="" disabled hidden >Open this select menu</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="other">Other</option>
@@ -108,20 +191,20 @@ export default function Signup() {
                   }
                 }
                 )
-                } type="text"  />
+                } type="text" />
               </Form.Group>
               {errors.license_no && <p className='text-danger' role="alert">{errors.license_no.message}</p>}
 
               <Form.Label>Specialization:</Form.Label>
               <Form.Select className="select_menu" {...register("specialization", { required: role === "doctor" ? "Specialization is required" : false })} aria-label="Default select example">
                 <option value="general_physician">General Physician (MBBS, MD Internal Medicine)</option>
-                <option value="dermatology">Dermatology (MD Dermatology)</option>
-                <option value="cardiologist">Cardiologist (DM Cardiology)</option>
-                <option value="emergency">Emergency Specialist (ER Physician, Trauma Specialist)</option>
+                <option value="dermatology">Dermato-Endocrine-Gyne Specialist (MD Dermatology)</option>
+                <option value="cardiologist">Cardio-Pulmo Specialist  (DM Cardiology)</option>
+                <option value="neuro_ortho">Neuro-Ortho Specialist</option>
               </Form.Select>
-              {errors.qualification && <p className='text-danger' role="alert">{errors.qualification.message}</p>}
-               
-                <Form.Group className="mb-3 " controlId="exampleForm.ControlInput1">
+              {errors.specialization && <p className='text-danger' role="alert">{errors.specialization.message}</p>}
+
+              <Form.Group className="mb-3 " controlId="exampleForm.ControlInput1">
                 <Form.Label>Contact No:</Form.Label>
                 <Form.Control className='box' {...register("contact", {
                   required: role === "doctor" ? "Contact number is required" : false,
@@ -132,7 +215,7 @@ export default function Signup() {
 
                 })} type="text" />
               </Form.Group>
-              {errors.experience && <p className='text-danger' role="alert">{errors.contact.message}</p>}
+              {errors.contact && <p className='text-danger' role="alert">{errors.contact.message}</p>}
 
               <Form.Group className="mb-3 " controlId="exampleForm.ControlInput1">
                 <Form.Label>Year of experience</Form.Label>
@@ -146,7 +229,7 @@ export default function Signup() {
               </Form.Group>
               {errors.experience && <p className='text-danger' role="alert">{errors.experience.message}</p>}
             </>)}
-          <button type='submit' className='button' >Create account</button>
+          <button type='submit' className='button'  disabled={isSubmitting} >{isSubmitting ? "Submitting..." : "Create account"}</button>
         </Form>
       </div>
     </>

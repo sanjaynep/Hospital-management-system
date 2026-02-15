@@ -48,14 +48,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     SPECIALIZATION_CHOICES = [
         ("general_physician", "General Physician (MBBS, MD Internal Medicine)"),
-        ("dermatology", "Dermatology (MD Dermatology)"),
+        ("neuro_ortho", "Neuro-Ortho Specialist"),
         ("cardiologist", "Cardiologist (DM Cardiology)"),
-        ("emergency", "Emergency Specialist (ER Physician, Trauma Specialist)"),
+        ("dermatology", "Dermato-Endocrine-Gyne Specialist (MD Dermatology)")
     ]
 
 
     email = models.EmailField(unique=True)
     fullname = models.CharField(max_length=255)
+    profile = models.ImageField(upload_to="media", height_field=None, width_field=None, max_length=None,null=True,blank=True)
     gender = models.CharField(max_length=10, choices=Gender_Choices)
 
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
@@ -68,6 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default = False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

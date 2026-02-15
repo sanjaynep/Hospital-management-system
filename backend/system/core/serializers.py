@@ -8,11 +8,12 @@ import re
 
 class UserSerializer(serializers.ModelSerializer):
     confirmpassword = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+    profile = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = User
         fields = [
-            'id', 'role', 'email', 'fullname', 'password', 'confirmpassword',
+            'id', 'role', 'email', 'profile','fullname', 'password', 'confirmpassword',
             'gender', 'contact', 'specialization', 'license_no', 'experience'
         ]
         extra_kwargs = {
@@ -34,43 +35,55 @@ class UserSerializer(serializers.ModelSerializer):
         role = attrs.get('role')
         password = attrs.get('password')
         confirmpassword = attrs.get('confirmpassword')
-        
+        errors = {}
+
         # Check gender is provided (required for all users)
         if not attrs.get('gender'):
-            raise serializers.ValidationError("Gender is required.")
+            errors['gender'] = "Gender is required."
 
         # Password checks
         if password != confirmpassword:
-            raise serializers.ValidationError("Password and Confirm Password doesn't match")
-        if len(password) < 8:
-            raise serializers.ValidationError("Password must be at least 8 characters")
-        if not re.search(r'[A-Z]', password):
-            raise serializers.ValidationError("Password must contain at least one uppercase letter")
-        if not re.search(r'[a-z]', password):
-            raise serializers.ValidationError("Password must contain at least one lowercase letter")
-        if not re.search(r'\d', password):
-            raise serializers.ValidationError("Password must contain at least one digit")
-        if not re.search(r'[@$!%*?&]', password):
-            raise serializers.ValidationError("Password must contain at least one special character (@$!%*?&)")
+            errors['confirmpassword'] = "Password and Confirm Password doesn't match"
+        else:
+            if not password:
+                errors['password'] = "Password is required."
+            else:
+                if len(password) < 8:
+                    errors.setdefault('password', []).append("Password must be at least 8 characters")
+                if not re.search(r'[A-Z]', password):
+                    errors.setdefault('password', []).append("Password must contain at least one uppercase letter")
+                if not re.search(r'[a-z]', password):
+                    errors.setdefault('password', []).append("Password must contain at least one lowercase letter")
+                if not re.search(r'\d', password):
+                    errors.setdefault('password', []).append("Password must contain at least one digit")
+                if not re.search(r'[@$!%*?&]', password):
+                    errors.setdefault('password', []).append("Password must contain at least one special character (@$!%*?&)")
 
         # Role-based checks
         if role == 'doctor':
             required_fields = ['license_no', 'experience', 'contact', 'specialization']
             for field in required_fields:
                 if not attrs.get(field):
-                    raise serializers.ValidationError({
-                        field: f"{field.replace('_', ' ').title()} is required for doctors."
-                    })
+                    errors[field] = f"{field.replace('_', ' ').title()} is required for doctors."
         elif role == 'user':
             attrs['license_no'] = None
             attrs['experience'] = None
             attrs['specialization'] = None
             attrs['contact'] = None
 
+        if errors:
+            # convert lists for password into single string messages where appropriate
+            if 'password' in errors and isinstance(errors['password'], list):
+                errors['password'] = ' '.join(errors['password'])
+            raise serializers.ValidationError(errors)
+
         return attrs
 
     def create(self, validated_data):
-        validated_data.pop('confirmpassword')
+        validated_data.pop('confirmpassword', None)
+        # Ensure profile has a value to satisfy model (use empty string if not provided)
+        if 'profile' not in validated_data or validated_data.get('profile') is None:
+            validated_data['profile'] = ''
         return User.objects.create_user(**validated_data)
     
 

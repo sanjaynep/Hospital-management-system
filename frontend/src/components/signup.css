@@ -4,13 +4,13 @@
     color: rgb(180, 124, 231);
 }
 
-.container{
-    margin-top: 15px;
-    width: 40%;
-    justify-content: center;
-    border-radius: 8px; /* optional rounded corners */
-    border: rgb(31, 30, 29);
-    box-shadow: 0 8px 6px rgba(0, 0, 0, 0.2); /* shadow effect */
+.signup-container{
+  margin-top: 15px;
+  width: 50%;
+  justify-content: center;
+  border-radius: 8px; /* optional rounded corners */
+  border: rgb(31, 30, 29);
+  box-shadow: 0 8px 6px rgba(0, 0, 0, 0.2); /* shadow effect */
 
 }
 .select_menu{
@@ -33,9 +33,37 @@
 
 
 @media (max-width: 768px) {
-  .container {
+  .signup-container {
     width: 100%;
     padding-left: 15px;
     padding-right: 15px;
   }
+}
+
+/* password section show */
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.transparent-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #ccc; /* subtle underline */
+  padding-right: 2rem; /* space for the icon */
+  box-shadow: none;
+}
+
+.transparent-input:focus {
+  outline: none;
+  border-bottom: 1px solid #007bff; /* highlight on focus */
+}
+
+.toggle-icon {
+  position: absolute;
+  right: 0.5rem;
+  cursor: pointer;
+  color: #888;
 }

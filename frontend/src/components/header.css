@@ -1,39 +1,58 @@
+/* ============================
+   HEADER - with slightly dark shadow below
+   ============================ */
 header {
-    height:60px;
-    background-color: #ffffff; /* ensure header is visible so radius and shadow show */
-    border-radius: 10px; /* rounded corners */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.12); /* subtle black shadow */
-    display:flex;
-    align-items: center;
+  height: 60px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 header ul {
-    display:flex;
-    justify-content: space-between;
-    padding-right: 30px;
-    width: 100%;
-    margin: 0;
-    list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 /* Brand styling */
 .brand {
-    display: flex;
-    align-items: center;
-    gap: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .brand-icon {
-    font-size: 1.6rem;
+  font-size: 1.6rem;
+  color: rgb(88, 26, 146);
 }
 
 .brand-text {
-    font-weight: 600;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #333;
 }
 
-/* Nav items (Privacy, Help) spaced by 30px */
+/* Nav items */
 .nav-items {
-    display: flex;
-    gap: 20px;
-    
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* Nav links - blue, no underline */
+.nav-items a {
+  color: #0b5ed7;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.nav-items a:hover {
+  text-decoration: underline;
 }

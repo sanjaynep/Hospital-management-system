@@ -1,5 +1,6 @@
 import { RiStethoscopeLine } from "react-icons/ri";
 import './header.css'
+import { Link } from "react-router-dom";
 
 export default function Header() {
 
@@ -13,11 +14,10 @@ export default function Header() {
                 </li>
 
                 <li className="nav-items">
-                    <span>Privacy Policy</span>
-                    <span>Help</span>
+                    <span><Link to="/login">Login </Link></span>
+                    <span><Link to="/register">Register</Link></span>
                 </li>
             </ul>
-
         </header>
     )
 }

@@ -82,14 +82,15 @@ export default function Login() {
             </div>
             {errors.password && <p className="error-text">{errors.password.message}</p>}
           </div>
+          <p className="mt-3">
+            <Link to="/resetpassword" style={{textDecoration: "none",color: "black"}}>Forget password?</Link>
+          </p>
 
           <button className="primary-button" type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Logging in..." : "Login"}
           </button>
 
-          <p className="mt-3">
-            Forgot your password? <Link to="/resetpassword">Click here</Link>
-          </p>
+          
         </form>
       </div>
     </>

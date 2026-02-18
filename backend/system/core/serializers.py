@@ -97,7 +97,7 @@ class loginserializer(serializers.Serializer):
 class welcomeSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
-        fields=['id', 'email', 'fullname']
+        fields=['id', 'email', 'fullname','role','gender','specialization','experience','profile']
 
 
 class linkserializer(serializers.Serializer):

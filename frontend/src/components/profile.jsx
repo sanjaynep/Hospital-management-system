@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
 import { useState,useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+import { FaHeartbeat } from "react-icons/fa";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-
+import "./profile.css"
 
 export default function DAshboard() {
 let[data,setdata]=useState({email:"",username:"",id:""})
@@ -63,15 +61,17 @@ const handlelogout = async () =>{
 
     return(
         <>
-          <Navbar bg="dark" data-bs-theme="dark">
-        <Container >
-          <Navbar.Brand >{data.username}</Navbar.Brand>
-          <Nav className=" d-flex justify-content-end">
-            <Nav.Link className='text-primary me-3 ' as={Link} to="/change-password" >change password</Nav.Link>
-            <Nav.Link className='text-primary me-3' onClick={handlelogout} >Logout</Nav.Link>
-          </Nav>
-        </Container>
-      </Navbar>
+          <header className='header'>
+               <div className="icons"><FaHeartbeat /><h1>HealthConnect</h1></div>
+               <div className="right">
+                <button className="notification">
+                  Notifications
+                </button>
+                <button onSubmit={handlelogout} className="logout">
+                  logout
+                </button>
+               </div>
+          </header>
         </>
     )
 }

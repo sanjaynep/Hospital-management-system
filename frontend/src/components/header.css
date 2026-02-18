@@ -56,3 +56,54 @@ header ul {
 .nav-items a:hover {
   text-decoration: underline;
 }
+
+/* Make nav links look like compact buttons (desktop) */
+.nav-items a {
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+.nav-items a:hover {
+  background-color: rgba(11,94,215,0.08);
+  transform: translateY(-1px);
+}
+
+/* Responsive: keep the same structure but make buttons and branding smaller on narrow screens */
+@media (max-width: 600px) {
+  header {
+    height: 48px;
+    padding: 0 12px;
+  }
+
+  .brand-icon {
+    font-size: 1.1rem;
+  }
+
+  .brand-text {
+    font-size: 0.95rem;
+  }
+
+  .nav-items {
+    gap: 10px;
+  }
+
+  .nav-items a {
+    font-size: 0.82rem;
+    padding: 5px 8px;
+    border-radius: 5px;
+  }
+}
+
+@media (max-width: 380px) {
+  /* very small screens: slightly more compact */
+  .brand-text {
+    display: none; /* optional: hide text to save space */
+  }
+  .brand-icon {
+    font-size: 1.25rem;
+  }
+  .nav-items a {
+    font-size: 0.78rem;
+    padding: 4px 6px;
+  }
+}

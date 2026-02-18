@@ -1,0 +1,55 @@
+.header{
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}
+.header .icons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.header .icons h1 {
+    margin: 0;
+    line-height: 1;
+}
+/* Ensure the SVG icon matches the text height and is vertically centered */
+.header .icons svg {
+    color:rgb(190, 18, 176);
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+.header .icons h1 {
+    font-size: 20px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+}
+
+.right{
+    position:absolute;
+    right:0;
+    margin-right: 10px;
+    display:flex;
+    align-items: center;
+    gap:10px
+}
+.right .notification{
+    height:35px;
+    font-size: medium;
+    border-radius: 60px;
+    background-color: #df14df;
+    display:flex;
+    align-items: center;
+}
+.right .logout{
+    height: 35px;
+    font-size: medium;
+    color: black;
+    border-radius: 50px;
+    background-color: rgb(250, 250, 248);
+    display: flex;
+    align-items: center;
+}
+

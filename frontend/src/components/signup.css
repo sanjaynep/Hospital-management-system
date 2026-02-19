@@ -1,41 +1,197 @@
-.head{
-    font-size: larger;
-    font-family: cursive;
-    color: rgb(180, 124, 231);
+/* ============================
+   THEME VARIABLES
+   ============================ */
+:root {
+  --primary: rgb(88, 26, 146);
+  --primary-dark: rgb(68, 18, 118);
+  --link-blue: #0b5ed7;
+  --muted: #6c757d;
+  --border-light: #ddd;
+  --bg-white: #fff;
+  --text-dark: #333;
 }
 
-.container{
-    margin-top: 15px;
-    width: 40%;
-    justify-content: center;
-    border-radius: 8px; /* optional rounded corners */
-    border: rgb(31, 30, 29);
-    box-shadow: 0 8px 6px rgba(0, 0, 0, 0.2); /* shadow effect */
-
-}
-.select_menu{
-    margin-bottom: 10px;
-    border-radius: 10px;
-}
-.box{
-    border:solid rgb(218, 207, 207);
-    border-radius: 50px;
-    width: 100%;
+/* ============================
+   FORM CONTAINER - 60% width on large screens, centered
+   ============================ */
+.signup-container {
+  width: 90%;
+  max-width: 520px;
+  margin: 30px auto;
+  padding: 25px 30px;
+  background: var(--bg-white);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
-.button {
-    background-color:rgb(88, 26, 146);
-    width:100%;
-    border-radius: 50px;
-    margin-top: 10px;
-    margin-bottom: 30px;
-}
-
-
-@media (max-width: 768px) {
-  .container {
-    width: 100%;
-    padding-left: 15px;
-    padding-right: 15px;
+@media (min-width: 992px) {
+  .signup-container {
+    width: 60%;
+    max-width: 520px;
   }
 }
+
+/* ============================
+   PAGE HEADING
+   ============================ */
+.head {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* ============================
+   FORM LABELS
+   ============================ */
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+/* ============================
+   FORM FIELDS
+   ============================ */
+.field-row {
+  margin-bottom: 15px;
+}
+
+.box,
+.form-input,
+.select_menu {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  background: var(--bg-white);
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.box:focus,
+.form-input:focus,
+.select_menu:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(88, 26, 146, 0.1);
+}
+
+.box:-webkit-autofill,
+.form-input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: var(--text-dark) !important;
+}
+
+.select_menu {
+  cursor: pointer;
+}
+
+/* ============================
+   PASSWORD WRAPPER
+   ============================ */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  padding-right: 42px;
+}
+
+.password-wrapper .toggle-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--muted);
+  user-select: none;
+}
+
+/* ============================
+   PRIMARY BUTTON - dark purple, 50px radius, full width, 10px padding
+   ============================ */
+.primary-button {
+  display: block;
+  width: 100%;
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: var(--primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.primary-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.primary-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ============================
+   ALERTS
+   ============================ */
+.alert {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+}
+
+.alert-success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.alert-danger {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* ============================
+   ERROR & SUCCESS TEXT
+   ============================ */
+.error-text,
+.text-danger {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+.text-success {
+  color: #28a745;
+  font-size: 0.875rem;
+}
+
+/* ============================
+   LINKS - blue, no underline
+   ============================ */
+a {
+  color: var(--link-blue);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ============================
+   SPACING HELPERS
+   ============================ */
+.mt-1 { margin-top: 8px; }
+.mt-3 { margin-top: 16px; }
+.mb-3 { margin-bottom: 15px; }
+

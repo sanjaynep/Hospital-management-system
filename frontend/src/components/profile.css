@@ -1,8 +1,17 @@
+/* ── Page wrapper: stack header / main / footer in a full-height column ── */
+.page {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+}
+
 .header{
     padding: 10px 15px;
     display: flex;
     align-items: center;
     justify-items: center;
+    flex-shrink: 0;
 }
 .header .icons {
     display: flex;
@@ -27,15 +36,16 @@
     align-items: center;
 }
 
-.right{
-    position:absolute;
-    right:0;
+/* header buttons row — scoped so it doesn't bleed into .main .right */
+.header .header-actions{
+    position: absolute;
+    right: 0;
     margin-right: 10px;
-    display:flex;
+    display: flex;
     align-items: center;
-    gap:10px
+    gap: 10px;
 }
-.right .notification{
+.header .header-actions .notification{
     height:35px;
     font-size: medium;
     border-radius: 60px;
@@ -43,7 +53,7 @@
     display:flex;
     align-items: center;
 }
-.right .logout{
+.header .header-actions .logout{
     height: 35px;
     font-size: medium;
     color: black;
@@ -52,4 +62,180 @@
     display: flex;
     align-items: center;
 }
+.main{
+    display: grid;
+    grid-template-columns: 2fr 8fr;
+    flex: 1;          /* fill all space between header and footer */
+    overflow: hidden; /* keep children's scroll self-contained */
+}
+.main .left {
+    background-color: #f194f1;
+    padding: 10px;
+    overflow-y: auto;
+}
+.main .right {
+    background: rgb(237, 243, 237);
+    padding: 16px;
+    overflow-y: auto;
+    /* override the generic .right { position:absolute } that would break the grid */
+    position: static;
+    width: auto;
+}
+.main .left button{
+    width:100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background-color: aliceblue;
+    color:black;
+    border-radius: 30px;
 
+}
+
+.footer {
+  height: 40px;
+  background-color: #f194f1;
+  color: rgb(27, 25, 25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Welcome banner ─────────────────────────────────────── */
+.profile-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.profile-banner h2 {
+    margin: 0 0 4px;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+.profile-banner p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+.book-btn {
+    flex-shrink: 0;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 30px;
+    background: #df14df;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.book-btn:hover {
+    background: #b80fb8;
+}
+
+/* ── Doctors section ─────────────────────────────────────── */
+.doctors-section h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+/* 2 cards per row */
+.doctor-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+/* card: vertical stack (header row + actions row) */
+.doctor-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s;
+}
+.doctor-card:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.11);
+}
+/* top row inside card: avatar + text */
+.doc-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.doc-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #f194f1;
+    color: #6a006a;
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.doc-info {
+    flex: 1;
+}
+.doc-info h4 {
+    margin: 0 0 2px;
+    font-size: 1rem;
+    font-weight: 700;
+}
+.doc-info p {
+    margin: 0 0 2px;
+    color: #555;
+    font-size: 0.85rem;
+}
+.doc-info span {
+    font-size: 0.78rem;
+    color: #888;
+}
+.doc-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.avail-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+.avail-badge.avail {
+    background: #e6f9ee;
+    color: #1a8c45;
+}
+.avail-badge.busy {
+    background: #fdecea;
+    color: #c0392b;
+}
+.select-btn {
+    padding: 6px 16px;
+    border: 2px solid #df14df;
+    border-radius: 20px;
+    background: transparent;
+    color: #df14df;
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition:  0.2s, color 0.2s;
+}
+.select-btn:hover:not(:disabled) {
+    background: #df14df;
+    color: #fff;
+}
+.select-btn:disabled {
+    border-color: #ccc;
+    color: #ccc;
+    cursor: not-allowed;
+}

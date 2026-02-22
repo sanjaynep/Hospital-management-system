@@ -61,7 +61,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         # Role-based checks
         if role == 'doctor':
-            required_fields = ['license_no', 'experience', 'contact', 'specialization']
+            required_fields = ['license_no', 'experience', 'specialization']
             for field in required_fields:
                 if not attrs.get(field):
                     errors[field] = f"{field.replace('_', ' ').title()} is required for doctors."
@@ -69,7 +69,7 @@ class UserSerializer(serializers.ModelSerializer):
             attrs['license_no'] = None
             attrs['experience'] = None
             attrs['specialization'] = None
-            attrs['contact'] = None
+            
 
         if errors:
             # convert lists for password into single string messages where appropriate

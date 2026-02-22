@@ -13,7 +13,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from .models import User
-from .utils import send_activation_email
+from .utils import send_activation_email,ModelWiring
 
 def get_tokens_for_user(user):
     if not user.is_active:
@@ -122,3 +122,78 @@ class resetpasswordview(APIView):
         if serializer.is_valid(raise_exception=True):
             return Response({'msg':'password reset successful'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    # appointment booking
+
+class PredictDiseaseView(APIView):
+    def post(self, request):
+        # Parse JSON body (DRF already parses request.data, so you can skip json.loads)
+        selected_symptoms = request.data.get("symptoms", [])
+
+        # Run prediction
+        prediction_code = ModelWiring.predict(selected_symptoms)
+
+        # Map numeric code back to disease name
+        disease_map = {
+            0:'Fungal infection',1:'Allergy',2:'GERD',3:'Chronic cholestasis',4:'Drug Reaction',
+            5:'Peptic ulcer diseae',6:'AIDS',7:'Diabetes ',8:'Gastroenteritis',9:'Bronchial Asthma',
+            10:'Hypertension ',11:'Migraine',12:'Cervical spondylosis',13:'Paralysis (brain hemorrhage)',
+            14:'Jaundice',15:'Malaria',16:'Chicken pox',17:'Dengue',18:'Typhoid',19:'hepatitis A',
+            20:'Hepatitis B',21:'Hepatitis C',22:'Hepatitis D',23:'Hepatitis E',24:'Alcoholic hepatitis',
+            25:'Tuberculosis',26:'Common Cold',27:'Pneumonia',28:'Dimorphic hemmorhoids(piles)',
+            29:'Heart attack',30:'Varicose veins',31:'Hypothyroidism',32:'Hyperthyroidism',
+            33:'Hypoglycemia',34:'Osteoarthristis',35:'Arthritis',36:'(vertigo) Paroymsal  Positional Vertigo',
+            37:'Acne',38:'Urinary tract infection',39:'Psoriasis',40:'Impetigo'
+        }
+
+        predicted_disease = disease_map.get(prediction_code, "Unknown")
+
+        doctor_map = {
+            'Fungal infection': 'dermatology',
+            'Allergy': 'general_physician',
+            'GERD': 'general_physician',
+            'Chronic cholestasis': 'general_physician',
+            'Drug Reaction': 'general_physician',
+            'Peptic ulcer diseae': 'general_physician',
+            'AIDS': 'general_physician',
+            'Diabetes ': 'dermatology',
+            'Gastroenteritis': 'general_physician',
+            'Bronchial Asthma': 'cardiologist',
+            'Hypertension ': 'cardiologist',
+            'Migraine': 'neuro_ortho',
+            'Cervical spondylosis': 'neuro_ortho',
+            'Paralysis (brain hemorrhage)': 'neuro_ortho',
+            'Jaundice': 'general_physician',
+            'Malaria': 'general_physician',
+            'Chicken pox': 'general_physician',
+            'Dengue': 'general_physician',
+            'Typhoid': 'general_physician',
+            'hepatitis A': 'general_physician',
+            'Hepatitis B': 'general_physician',
+            'Hepatitis C': 'general_physician',
+            'Hepatitis D': 'general_physician',
+            'Hepatitis E': 'general_physician',
+            'Alcoholic hepatitis': 'general_physician',
+            'Tuberculosis': 'cardiologist',
+            'Common Cold': 'general_physician',
+            'Pneumonia': 'cardiologist',
+            'Dimorphic hemmorhoids(piles)': 'general_physician',
+            'Heart attack': 'cardiologist',
+            'Varicose veins': 'cardiologist',
+            'Hypothyroidism': 'dermatology',
+            'Hyperthyroidism': 'dermatology',
+            'Hypoglycemia': 'dermatology',
+            'Osteoarthristis': 'neuro_ortho',
+            'Arthritis': 'neuro_ortho',
+            '(vertigo) Paroymsal  Positional Vertigo': 'neuro_ortho',
+            'Acne': 'dermatology',
+            'Urinary tract infection': 'general_physician',
+            'Psoriasis': 'dermatology',
+            'Impetigo': 'dermatology'
+        }
+
+        suggested_doctor = doctor_map.get(predicted_disease, "general_physician")
+
+
+        return Response({"predicted_disease": predicted_disease , "suggested_doctor":suggested_doctor})

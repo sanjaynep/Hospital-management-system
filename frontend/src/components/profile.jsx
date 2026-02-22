@@ -4,11 +4,9 @@ import { FaHeartbeat } from "react-icons/fa";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import "./profile.css"
+import Dashboard_header from "./dashboard_header";
 
-// ── Dummy doctor data ─────────────────────────────────────────────────────────
-// When backend is ready, replace this with:
-//   const [doctors, setDoctors] = useState([]);
-//   and fetch from GET /api/doctors/ inside useEffect
+
 const DUMMY_DOCTORS = [
   { id: 1, name: "Dr. Aarav Mehta",  specialty: "Cardiologist",  experience: 12, available: true  },
   { id: 2, name: "Dr. Priya Sharma", specialty: "Dermatologist", experience: 8,  available: true  },
@@ -38,52 +36,11 @@ export default function Dashboard() {
 
 
 
-  const handlelogout = async () => {
-    const access = localStorage.getItem("access_token");
-    const refresh = localStorage.getItem("refresh_token");
-    if (!refresh) {
-      // nothing to revoke — just clear and redirect
-      localStorage.removeItem("access_token");
-      navigate("/login");
-      return;
-    }
-
-    try {
-      const res = await axios.post("http://127.0.0.1:8000/api/user/logout/",
-        { refresh },
-        { headers: { "Content-Type": "application/json", ...(access ? { Authorization: `Bearer ${access}` } : {}), }, });
-
-      if (res.status === 205 || res.status === 200) {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        delete axios.defaults.headers.common["Authorization"];
-        navigate("/login");
-        return;
-      }
-    }
-    catch (e) {
-
-      console.error("Logout failed:");
-    }
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    delete axios.defaults.headers.common["Authorization"];
-    navigate("/login");
-  };
+  
 
   return (
     <div className="page">
-      <header className='header'>
-        <div className="icons"><FaHeartbeat /><h1>HealthConnect</h1></div>
-        <div className="header-actions">
-          <button className="notification">
-            Notifications
-          </button>
-          <button onClick={handlelogout} className="logout">
-            Logout
-          </button>
-        </div>
-      </header>
+      <Dashboard_header />
 
       <div className="main">
         <div className="left">
@@ -99,7 +56,7 @@ export default function Dashboard() {
               <h2>Welcome, {data.username || "Guest"}</h2>
               <p>Find and book appointments with expert doctors</p>
             </div>
-            <button onClick={() => navigate("/appointment")} className="book-btn">
+            <button onClick={() => navigate("/book_appointment")} className="book_btn">
               + Book Appointment
             </button>
           </div>

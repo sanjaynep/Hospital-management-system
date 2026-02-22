@@ -122,12 +122,12 @@
     color: #666;
     font-size: 0.9rem;
 }
-.book-btn {
+.book_btn {
     flex-shrink: 0;
     padding: 10px 20px;
     border: none;
     border-radius: 30px;
-    background: #df14df;
+    background: #0fee6cee;
     color: #fff;
     font-weight: 600;
     font-size: 0.9rem;
@@ -138,12 +138,12 @@
     background: #b80fb8;
 }
 
-/* ── Doctors section ─────────────────────────────────────── */
 .doctors-section h3 {
     font-size: 1.1rem;
     font-weight: 700;
     margin-bottom: 14px;
 }
+
 /* 2 cards per row */
 .doctor-cards {
     display: grid;

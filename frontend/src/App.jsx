@@ -8,8 +8,8 @@ export default function (){
 
     return(
         <>
-       <DoctorAppointments />
-      {/* <Signup /> */}
+      
+      <Signup />
 
        </>
     )

@@ -13,6 +13,8 @@ import DAshboard from './components/profile.jsx';
 import ProtectedRoute from "./protectedroute.jsx";
 import Emailbox from './components/email_form.jsx';
 import New_password from './components/new_password.jsx';
+import DoctorProfile from './components/doctor_profile.jsx';
+import BookAppointment from './components/appointment.jsx';
 
 const router = createBrowserRouter([
   {
@@ -47,7 +49,22 @@ const router = createBrowserRouter([
     path: "/resetpassword",
     element: <Emailbox/>,
   },
-
+  {
+    path:"/Doctor-profile",
+    element:(
+      <ProtectedRoute>
+       <DoctorProfile />
+      </ProtectedRoute>
+    ),
+  },
+{
+    path:"/book_appointment",
+    element:(
+      <ProtectedRoute>
+       <BookAppointment />
+      </ProtectedRoute>
+    ),
+  },
 ]);
 
 createRoot(document.getElementById('root')).render(

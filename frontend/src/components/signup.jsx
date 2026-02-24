@@ -29,10 +29,10 @@ export default function Signup() {
       formData.append("confirmpassword", data.confirmpassword);
       formData.append("role", data.role);
       formData.append("gender", data.gender);
+      formData.append("contact",data.contact)
       if (data.profile && data.profile.length > 0) formData.append("profile", data.profile[0]);
       if (data.license_no) formData.append("license_no", data.license_no);
       if (data.specialization) formData.append("specialization", data.specialization);
-      if (data.contact) formData.append("contact", data.contact);
       if (data.experience !== undefined && data.experience !== null) formData.append("experience", data.experience);
 
       const response = await axios.post("http://127.0.0.1:8000/api/user/register/", formData);
@@ -183,6 +183,17 @@ export default function Signup() {
             {errors.gender && <p className="error-text">{errors.gender.message}</p>}
           </div>
 
+          <div className="field-row">
+            <label className="form-label">Contact No</label>
+            <input
+              className="box"
+              {...register("contact", { required: "Contact number is required" })}
+              type="text"
+              placeholder="Enter contact number"
+            />
+            {errors.contact && <p className="error-text">{errors.contact.message}</p>}
+          </div>
+
           {/* Doctor-specific fields */}
           {role === "doctor" && (
             <>
@@ -209,17 +220,6 @@ export default function Signup() {
                   <option value="neuro_ortho">Neuro-Ortho Specialist</option>
                 </select>
                 {errors.specialization && <p className="error-text">{errors.specialization.message}</p>}
-              </div>
-
-              <div className="field-row">
-                <label className="form-label">Contact No</label>
-                <input
-                  className="box"
-                  {...register("contact", { required: "Contact number is required" })}
-                  type="text"
-                  placeholder="Enter contact number"
-                />
-                {errors.contact && <p className="error-text">{errors.contact.message}</p>}
               </div>
 
               <div className="field-row">

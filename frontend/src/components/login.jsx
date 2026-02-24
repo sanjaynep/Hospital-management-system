@@ -28,12 +28,27 @@ export default function Login() {
       });
 
       const token = response.data.token;
+      const role = response.data.user.role;
       if (token && token.access) {
         localStorage.setItem("access_token", token.access);
         localStorage.setItem("refresh_token", token.refresh);
+        localStorage.setItem("role",role)
       }
       setMessage({ text: response.data.msg || "Login successful", type: "success" });
-      navigate("/profile");
+      console.log("Login response:", response.data);
+
+      if(role === "doctor"){
+        navigate("/Doctor-profile")
+      }
+      else if(role === "user"){
+        navigate("/profile");
+      }
+      else{
+        setMessage({text:"something went wrong",type: "error"})
+      }
+
+
+      
     } catch (err) {
       if (err.response && err.response.data.errors) {
         setMessage({ text: err.response.data.errors.msg, type: "error" });

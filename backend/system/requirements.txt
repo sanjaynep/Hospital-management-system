@@ -4,3 +4,8 @@ djangorestframework-simplejwt
 python-dotenv
 django-cors-headers
 pillow
+scikit-learn
+joblib 
+numpy 
+scipy
+pandas

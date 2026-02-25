@@ -15,6 +15,8 @@ import Emailbox from './components/email_form.jsx';
 import New_password from './components/new_password.jsx';
 import DoctorProfile from './components/doctor_profile.jsx';
 import BookAppointment from './components/appointment.jsx';
+import Emergency from './components/emergency.jsx';
+import DoctorsList from './components/doctors_list.jsx';
 
 const router = createBrowserRouter([
   {
@@ -36,7 +38,7 @@ const router = createBrowserRouter([
   {
     path:"/profile",
     element:(
-      <ProtectedRoute>
+      <ProtectedRoute requiredRole="user">
        <DAshboard />
       </ProtectedRoute>
     ),
@@ -52,7 +54,7 @@ const router = createBrowserRouter([
   {
     path:"/Doctor-profile",
     element:(
-      <ProtectedRoute>
+      <ProtectedRoute requiredRole="doctor">
        <DoctorProfile />
       </ProtectedRoute>
     ),
@@ -60,8 +62,24 @@ const router = createBrowserRouter([
 {
     path:"/book_appointment",
     element:(
-      <ProtectedRoute>
+      <ProtectedRoute requiredRole="user">
        <BookAppointment />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path:"/emergency",
+    element:(
+      <ProtectedRoute requiredRole="user">
+       <Emergency />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path:"/doctors",
+    element:(
+      <ProtectedRoute requiredRole="user">
+       <DoctorsList />
       </ProtectedRoute>
     ),
   },

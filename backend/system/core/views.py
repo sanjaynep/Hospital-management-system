@@ -2,7 +2,11 @@ from django.contrib import messages
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserSerializer, loginserializer,welcomeSerializer,linkserializer, resetpasswordserializer
+from .serializers import (
+    UserSerializer, loginserializer, welcomeSerializer,
+    linkserializer, resetpasswordserializer,
+    DoctorListSerializer, AppointmentSerializer,
+)
 from django.contrib.auth import authenticate
 from .error import AccountErrorRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -12,8 +16,9 @@ from rest_framework_simplejwt.tokens import  RefreshToken
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
-from .models import User
-from .utils import send_activation_email,ModelWiring
+from .models import User, Appointment
+from .utils import send_activation_email, ModelWiring
+from datetime import date as date_today
 
 def get_tokens_for_user(user):
     if not user.is_active:
@@ -195,5 +200,221 @@ class PredictDiseaseView(APIView):
 
         suggested_doctor = doctor_map.get(predicted_disease, "general_physician")
 
+        # Fetch available doctors of that specialization
+        doctors_qs = User.objects.filter(
+            role='doctor',
+            specialization=suggested_doctor,
+            is_active=True,
+        )
+        doctors_data = DoctorListSerializer(doctors_qs, many=True).data
 
-        return Response({"predicted_disease": predicted_disease , "suggested_doctor":suggested_doctor})
+        return Response({
+            "predicted_disease": predicted_disease,
+            "suggested_specialization": suggested_doctor,
+            "available_doctors": doctors_data,
+        })
+
+
+# ── 20-minute time slots ────────────────────────────────────────
+ALL_SLOTS = [
+    "09:00 AM", "09:20 AM", "09:40 AM",
+    "10:00 AM", "10:20 AM", "10:40 AM",
+    "11:00 AM", "11:20 AM", "11:40 AM",
+    "12:00 PM", "12:20 PM", "12:40 PM",
+    "02:00 PM", "02:20 PM", "02:40 PM",
+    "03:00 PM", "03:20 PM", "03:40 PM",
+    "04:00 PM", "04:20 PM", "04:40 PM",
+]
+
+
+def _get_free_slots(doctor_id, date):
+    """Return slots NOT yet booked (non-cancelled) for a doctor on a date."""
+    booked = set(
+        Appointment.objects.filter(doctor_id=doctor_id, date=date)
+        .exclude(status='cancelled')
+        .values_list('time_slot', flat=True)
+    )
+    return [s for s in ALL_SLOTS if s not in booked]
+
+
+def _round_robin_doctor(specialization, date):
+    """
+    Pick the doctor of `specialization` who has the FEWEST booked
+    (non-cancelled) slots on `date`.  Ties are broken by doctor id
+    so the rotation is deterministic (round-robin effect).
+    """
+    doctors = User.objects.filter(
+        role='doctor', specialization=specialization, is_active=True
+    ).order_by('id')
+    if not doctors.exists():
+        return None, []
+
+    best_doc = None
+    best_slots = []
+    fewest_booked = len(ALL_SLOTS) + 1
+
+    for doc in doctors:
+        free = _get_free_slots(doc.id, date)
+        booked = len(ALL_SLOTS) - len(free)
+        if len(free) > 0 and booked < fewest_booked:
+            fewest_booked = booked
+            best_doc = doc
+            best_slots = free
+
+    return best_doc, best_slots
+
+
+# ── List doctors (optionally by specialization) ────────────────
+class DoctorListView(APIView):
+    """GET /api/user/doctors/?specialization=cardiologist"""
+    def get(self, request):
+        spec = request.query_params.get('specialization', '')
+        qs = User.objects.filter(role='doctor', is_active=True)
+        if spec:
+            qs = qs.filter(specialization=spec)
+        return Response(DoctorListSerializer(qs, many=True).data)
+
+
+# ── Available 20-min slots for a doctor on a date ──────────────
+class AvailableSlotsView(APIView):
+    """GET /api/user/doctors/<doctor_id>/slots/?date=2026-02-23"""
+    def get(self, request, doctor_id):
+        date = request.query_params.get('date')
+        if not date:
+            return Response({'msg': 'date query param required'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'slots': _get_free_slots(doctor_id, date)})
+
+
+# ── Create / list appointments ──────────────────────────────────
+class AppointmentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if user.role == 'doctor':
+            qs = Appointment.objects.filter(doctor=user)
+        else:
+            qs = Appointment.objects.filter(patient=user)
+        return Response(AppointmentSerializer(qs, many=True).data)
+
+    def post(self, request):
+        """Patient books an appointment (normal symptom-based flow)."""
+        serializer = AppointmentSerializer(data=request.data)
+        if serializer.is_valid():
+            doctor = serializer.validated_data['doctor']
+            dt     = serializer.validated_data['date']
+            slot   = serializer.validated_data['time_slot']
+
+            if slot not in ALL_SLOTS:
+                return Response({'msg': 'Invalid time slot.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # conflict check
+            if Appointment.objects.filter(
+                doctor=doctor, date=dt, time_slot=slot
+            ).exclude(status='cancelled').exists():
+                return Response(
+                    {'msg': 'This time slot is already booked. Please choose another.'},
+                    status=status.HTTP_409_CONFLICT,
+                )
+
+            serializer.save(patient=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ── Emergency booking (round-robin auto-assign) ────────────────
+class EmergencyBookView(APIView):
+    """POST { condition, specialization? }  →  auto-assigns a doctor."""
+    permission_classes = [IsAuthenticated]
+
+    # map emergency conditions → specialization
+    EMERGENCY_SPEC = {
+        'Heart Attack':     'cardiologist',
+        'Stroke':           'neuro_ortho',
+        'Snake Bite':       'general_physician',
+        'Severe Bleeding':  'general_physician',
+        'Seizure':          'neuro_ortho',
+        'Breathing Difficulty': 'cardiologist',
+        'Severe Burn':      'dermatology',
+        'Poisoning':        'general_physician',
+        'Accident / Trauma':'neuro_ortho',
+        'Anaphylaxis':      'general_physician',
+    }
+
+    def get(self, request):
+        """Return the list of supported emergency conditions."""
+        return Response({'conditions': list(self.EMERGENCY_SPEC.keys())})
+
+    def post(self, request):
+        condition = request.data.get('condition', '')
+        spec = self.EMERGENCY_SPEC.get(condition, request.data.get('specialization', 'general_physician'))
+        today = date_today.today()
+
+        doctor, free_slots = _round_robin_doctor(spec, today)
+
+        if not doctor or not free_slots:
+            return Response(
+                {'msg': f'No {spec.replace("_"," ")} doctors available today. Please call emergency helpline.'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+
+        # Assign the earliest free slot
+        slot = free_slots[0]
+
+        appt = Appointment.objects.create(
+            patient=request.user,
+            doctor=doctor,
+            disease=condition,
+            symptoms=[],
+            date=today,
+            time_slot=slot,
+            priority='emergency',
+            status='pending',
+            reason=f'EMERGENCY: {condition}',
+        )
+        return Response(AppointmentSerializer(appt).data, status=status.HTTP_201_CREATED)
+
+
+# ── Doctor approves / cancels an appointment ────────────────────
+class AppointmentStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pk):
+        # Only doctors can approve / cancel
+        if request.user.role != 'doctor':
+            return Response(
+                {'msg': 'Only doctors can update appointment status.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        # Check the appointment exists at all
+        try:
+            appt = Appointment.objects.get(pk=pk)
+        except Appointment.DoesNotExist:
+            return Response({'msg': 'Appointment not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Ensure this doctor owns the appointment
+        if appt.doctor_id != request.user.id:
+            return Response(
+                {'msg': 'You are not the assigned doctor for this appointment.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        new_status = request.data.get('status')
+        if new_status not in ('confirmed', 'cancelled'):
+            return Response({'msg': 'Invalid status. Use confirmed or cancelled.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        appt.status = new_status
+        appt.save()
+        return Response(AppointmentSerializer(appt).data)
+
+
+# ── Patient notifications ───────────────────────────────────────
+class PatientNotificationsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        appts = Appointment.objects.filter(
+            patient=request.user,
+        ).order_by('-priority', '-created_at')[:30]
+        return Response(AppointmentSerializer(appts, many=True).data)

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager, PermissionsMixin
+from django.conf import settings
 
 class UserManager(BaseUserManager):
     def create_user(self, email, fullname, password=None, **extra_fields):
@@ -79,3 +80,40 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.email} ({self.role})"
+
+class Appointment(models.Model):
+    PRIORITY_CHOICES = [
+        ('normal', 'Normal'),
+        ('emergency', 'Emergency'),
+    ]
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('cancelled', 'Cancelled'),
+        ('completed', 'Completed'),
+    ]
+
+    patient = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='patient_appointments', limit_choices_to={'role': 'user'}
+    )
+    doctor = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='doctor_appointments', limit_choices_to={'role': 'doctor'}
+    )
+    disease = models.CharField(max_length=255, blank=True, default='')
+    symptoms = models.JSONField(default=list, blank=True)
+    date = models.DateField()
+    time_slot = models.CharField(max_length=20)          
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='normal')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    reason = models.TextField(blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-priority', 'date', 'time_slot']   # emergency first
+        # prevent double-booking: same doctor, same date+slot
+        unique_together = ['doctor', 'date', 'time_slot']
+
+    def __str__(self):
+        return f"{self.patient.fullname} → {self.doctor.fullname} on {self.date} {self.time_slot}"

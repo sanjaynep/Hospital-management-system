@@ -285,11 +285,20 @@ class AvailableSlotsView(APIView):
         return Response({'slots': _get_free_slots(doctor_id, date)})
 
 
+def _auto_complete_past_appointments():
+    """Mark confirmed appointments whose date has passed as completed."""
+    Appointment.objects.filter(
+        status='confirmed',
+        date__lt=date_today.today(),
+    ).update(status='completed')
+
+
 # ── Create / list appointments ──────────────────────────────────
 class AppointmentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        _auto_complete_past_appointments()
         user = request.user
         if user.role == 'doctor':
             qs = Appointment.objects.filter(doctor=user)
@@ -299,6 +308,17 @@ class AppointmentView(APIView):
 
     def post(self, request):
         """Patient books an appointment (normal symptom-based flow)."""
+        _auto_complete_past_appointments()
+        # Prevent duplicate: patient must not have an active (pending/confirmed) appointment
+        if Appointment.objects.filter(
+            patient=request.user,
+            status__in=['pending', 'confirmed'],
+        ).exists():
+            return Response(
+                {'msg': 'You already have an active appointment. Please wait until it is completed or cancelled before booking another.'},
+                status=status.HTTP_409_CONFLICT,
+            )
+
         serializer = AppointmentSerializer(data=request.data)
         if serializer.is_valid():
             doctor = serializer.validated_data['doctor']
@@ -401,12 +421,31 @@ class AppointmentStatusView(APIView):
             )
 
         new_status = request.data.get('status')
-        if new_status not in ('confirmed', 'cancelled'):
-            return Response({'msg': 'Invalid status. Use confirmed or cancelled.'}, status=status.HTTP_400_BAD_REQUEST)
+        if new_status not in ('confirmed', 'cancelled', 'completed'):
+            return Response({'msg': 'Invalid status. Use confirmed, cancelled, or completed.'}, status=status.HTTP_400_BAD_REQUEST)
 
         appt.status = new_status
         appt.save()
         return Response(AppointmentSerializer(appt).data)
+
+
+# ── Delete appointment (patient only) ──────────────────────────
+class AppointmentDeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        try:
+            appt = Appointment.objects.get(pk=pk, patient=request.user)
+        except Appointment.DoesNotExist:
+            return Response({'msg': 'Appointment not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # If active, cancel it first then delete
+        if appt.status in ('pending', 'confirmed'):
+            appt.status = 'cancelled'
+            appt.save()
+
+        appt.delete()
+        return Response({'msg': 'Appointment deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
 
 # ── Patient notifications ───────────────────────────────────────
@@ -414,6 +453,7 @@ class PatientNotificationsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        _auto_complete_past_appointments()
         appts = Appointment.objects.filter(
             patient=request.user,
         ).order_by('-priority', '-created_at')[:30]

@@ -276,6 +276,11 @@ export default function DoctorProfile() {
                                                 </button>
                                             </>
                                         )}
+                                        {appt.status === "confirmed" && (
+                                            <button className="btn-approve" title="Mark as Completed" onClick={() => changeStatus(appt.id, "completed")}>
+                                                <FaCheck /> <span className="btn-label">Complete</span>
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>

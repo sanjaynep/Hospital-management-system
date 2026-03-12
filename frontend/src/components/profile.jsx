@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import "./profile.css";
 import Dashboard_header from "./dashboard_header";
+import { MdOutlineCancel } from "react-icons/md";
 
 const API = "http://127.0.0.1:8000/api/user";
 
@@ -66,6 +67,7 @@ export default function Dashboard() {
               <h3 className="sidebar-heading">My Appointments</h3>
               {notifications.slice(0, 6).map(n => (
                 <div key={n.id} className={`notif-card notif-${n.status}`}>
+                  <MdOutlineCancel className="text-danger "style={{ cursor: "pointer", height:"15px"}} />
                   <div className="notif-icon">{STATUS_ICON[n.status]}</div>
                   <div className="notif-body">
                     <strong>{n.doctor_name}</strong>
@@ -113,7 +115,7 @@ export default function Dashboard() {
                   </div>
                   <div className="doc-actions">
                     <span className="avail-badge avail">Available</span>
-                    <button onClick={() => navigate("/book_appointment")} className="select-btn">
+                    <button onClick={() => navigate("/book_appointment", { state: { doctor: doc } })} className="select-btn">
                       Book
                     </button>
                   </div>

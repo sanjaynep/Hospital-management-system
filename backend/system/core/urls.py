@@ -5,7 +5,7 @@ from core.views import (
     resetpasswordview, logoutview, ActivateAccountView,
     PredictDiseaseView, DoctorListView, AppointmentView,
     AppointmentStatusView, AvailableSlotsView, PatientNotificationsView,
-    EmergencyBookView,
+    EmergencyBookView, AppointmentDeleteView,
 )
 
 urlpatterns = [
@@ -25,6 +25,7 @@ urlpatterns = [
     # Appointments
     path("appointments/", AppointmentView.as_view(), name='appointments'),
     path("appointments/<int:pk>/status/", AppointmentStatusView.as_view(), name='appointment_status'),
+    path("appointments/<int:pk>/delete/", AppointmentDeleteView.as_view(), name='appointment_delete'),
 
     # Emergency booking (round-robin auto-assign)
     path("emergency/", EmergencyBookView.as_view(), name='emergency_book'),

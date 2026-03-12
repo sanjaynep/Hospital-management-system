@@ -90,7 +90,7 @@ export default function DoctorsList() {
                 </div>
                 <div className="dl-card-actions">
                   <span className="dl-badge-avail">Available</span>
-                  <button className="dl-book-btn" onClick={() => navigate("/book_appointment")}>
+                  <button className="dl-book-btn" onClick={() => navigate("/book_appointment", { state: { doctor: doc } })}>
                     <FaCalendarAlt /> Book
                   </button>
                 </div>

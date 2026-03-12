@@ -123,11 +123,12 @@
 
 /* ── Notification cards in sidebar ── */
 .notif-card {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 8px;
   border-radius: 10px;
-  padding: 10px 10px;
+  padding: 10px;
   margin-bottom: 6px;
   font-size: 0.8rem;
   background: #f8fafc;
@@ -139,11 +140,11 @@
 .notif-completed { background: #eff6ff; border-left-color: #2563eb; }
 
 .notif-icon { flex-shrink: 0; padding-top: 2px; }
-.notif-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.notif-body strong { font-size: 0.82rem; color: #0f172a; }
-.notif-date { font-size: 0.75rem; color: #64748b; display: flex; align-items: center; gap: 4px; }
-.notif-status { font-size: 0.75rem; font-weight: 600; color: #475569; }
-.notif-disease { font-size: 0.72rem; color: #94a3b8; }
+.notif-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; padding-right: 18px; }
+.notif-body strong { font-size: 0.82rem; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.notif-date { font-size: 0.75rem; color: #64748b; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notif-status { font-size: 0.75rem; font-weight: 600; color: #475569; white-space: nowrap; }
+.notif-disease { font-size: 0.72rem; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .notif-emg-tag {
   display: inline-block;
   margin-left: 6px;
@@ -153,6 +154,28 @@
   border-radius: 4px;
   font-size: 0.65rem;
   font-weight: 700;
+}
+
+/* ── Delete button on appointment history cards ── */
+.notif-delete-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 2px;
+  font-size: 0.7rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  transition: background 0.15s;
+}
+.notif-delete-btn:hover {
+  background: #fee2e2;
 }
 
 /* ── Section header row (title + "View All" button) ── */
@@ -221,7 +244,7 @@
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: background 0.2s;
+   
 }
 .book-btn:hover {
     background: #b80fb8;

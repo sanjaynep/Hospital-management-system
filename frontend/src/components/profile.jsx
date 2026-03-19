@@ -67,7 +67,17 @@ export default function Dashboard() {
           {notifications.length > 0 && (
             <>
               <h3 className="sidebar-heading">My Appointments</h3>
-              {notifications.filter(n => !dismissedIds.has(n.id)).slice(0, 6).map(n => (
+              {notifications
+                .sort((a, b) => {
+                  // Sort by created_at descending (latest created first)
+                  if (a.created_at && b.created_at) {
+                    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                  }
+                  return 0;
+                })
+                .filter(n => !dismissedIds.has(n.id))
+                .slice(0, 6)
+                .map(n => (
                 <div key={n.id} className={`notif-card notif-${n.status}`}>
                   <MdOutlineCancel 
                     className="text-danger" 

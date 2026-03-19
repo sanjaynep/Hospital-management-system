@@ -91,13 +91,20 @@ export default function DoctorProfile() {
         cancelled: appointments.filter(a => a.status === "cancelled").length,
     }), [appointments]);
 
-    /* Filtered + sorted list */
+    /* Filtered + sorted list (latest created appointments first) */
     const filtered = useMemo(() =>
         appointments
             .filter(a => {
                 if (filter !== "all" && a.status !== filter) return false;
                 if (search && !a.patient_name?.toLowerCase().includes(search.toLowerCase())) return false;
                 return true;
+            })
+            .sort((a, b) => {
+                // Sort by created_at descending (latest created first)
+                if (a.created_at && b.created_at) {
+                    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                }
+                return 0;
             }),
         [appointments, filter, search]
     );

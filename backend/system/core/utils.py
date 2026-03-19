@@ -72,17 +72,15 @@ class ModelWiring:
 
     @classmethod
     def symptoms_to_vector(cls, selected_symptoms):
-        # Iterate over full symptom list, not just selected ones
+        # selected lai 1 aaru lai 0
         return [1 if symptom in selected_symptoms else 0 for symptom in cls.SYMPTOMS]
 
     @classmethod
     def predict(cls, selected_symptoms):
         vector = cls.symptoms_to_vector(selected_symptoms)
-        # Build a DataFrame with the same feature names used in training
         try:
             X = pd.DataFrame([vector], columns=cls.SYMPTOMS)
             prediction_code = cls.model.predict(X)[0]
         except Exception:
-            # Fallback to list input if DataFrame construction fails
             prediction_code = cls.model.predict([vector])[0]
         return prediction_code

@@ -237,31 +237,31 @@ def _get_free_slots(doctor_id, date):
     return [s for s in ALL_SLOTS if s not in booked]
 
 
-def _round_robin_doctor(specialization, date):
-    """
-    Pick the doctor of `specialization` who has the FEWEST booked
-    (non-cancelled) slots on `date`.  Ties are broken by doctor id
-    so the rotation is deterministic (round-robin effect).
-    """
-    doctors = User.objects.filter(
-        role='doctor', specialization=specialization, is_active=True
-    ).order_by('id')
-    if not doctors.exists():
-        return None, []
+# def _round_robin_doctor(specialization, date):
+#     """
+#     Pick the doctor of `specialization` who has the FEWEST booked
+#     (non-cancelled) slots on `date`.  Ties are broken by doctor id
+#     so the rotation is deterministic (round-robin effect).
+#     """
+#     doctors = User.objects.filter(
+#         role='doctor', specialization=specialization, is_active=True
+#     ).order_by('id')
+#     if not doctors.exists():
+#         return None, []
 
-    best_doc = None
-    best_slots = []
-    fewest_booked = len(ALL_SLOTS) + 1
+#     best_doc = None
+#     best_slots = []
+#     fewest_booked = len(ALL_SLOTS) + 1
 
-    for doc in doctors:
-        free = _get_free_slots(doc.id, date)
-        booked = len(ALL_SLOTS) - len(free)
-        if len(free) > 0 and booked < fewest_booked:
-            fewest_booked = booked
-            best_doc = doc
-            best_slots = free
+#     for doc in doctors:
+#         free = _get_free_slots(doc.id, date)
+#         booked = len(ALL_SLOTS) - len(free)
+#         if len(free) > 0 and booked < fewest_booked:
+#             fewest_booked = booked
+#             best_doc = doc
+#             best_slots = free
 
-    return best_doc, best_slots
+#     return best_doc, best_slots
 
 
 # ── List doctors (optionally by specialization) ────────────────

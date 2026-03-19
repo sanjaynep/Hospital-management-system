@@ -7,7 +7,6 @@ import {
     FaCalendarAlt, FaClock, FaSearch,
     FaCheck, FaTimes, FaClipboardList,
     FaHourglassHalf, FaBan, FaPhoneAlt,
-    FaExclamationTriangle,
 } from "react-icons/fa";
 import "./doctor_profile.css";
 
@@ -92,18 +91,13 @@ export default function DoctorProfile() {
         cancelled: appointments.filter(a => a.status === "cancelled").length,
     }), [appointments]);
 
-    /* Filtered + sorted list (emergency first) */
+    /* Filtered + sorted list */
     const filtered = useMemo(() =>
         appointments
             .filter(a => {
                 if (filter !== "all" && a.status !== filter) return false;
                 if (search && !a.patient_name?.toLowerCase().includes(search.toLowerCase())) return false;
                 return true;
-            })
-            .sort((a, b) => {
-                if (a.priority === "emergency" && b.priority !== "emergency") return -1;
-                if (b.priority === "emergency" && a.priority !== "emergency") return 1;
-                return 0;
             }),
         [appointments, filter, search]
     );
@@ -143,7 +137,6 @@ export default function DoctorProfile() {
                                             <div>
                                                 <p className="notif-title">
                                                     {n.patient_name}
-                                                    {n.priority === "emergency" && <FaExclamationTriangle style={{ color: "#ef4444", marginLeft: 6 }} />}
                                                 </p>
                                                 <p className="notif-sub">{fmtDate(n.date)} · {n.time_slot} · {n.disease || n.reason}</p>
                                             </div>
@@ -231,17 +224,12 @@ export default function DoctorProfile() {
                         </div>
                     ) : (
                         filtered.map(appt => (
-                            <div key={appt.id} className={`da-card appt-card${expanded === appt.id ? " appt-expanded" : ""}${appt.priority === "emergency" ? " appt-emergency" : ""}`}>
+                            <div key={appt.id} className={`da-card appt-card${expanded === appt.id ? " appt-expanded" : ""}`}>
                                 <div className="appt-avatar">{appt.patient_name?.slice(0, 2).toUpperCase() || "?"}</div>
 
                                 <div className="appt-info">
                                     <h3 className="appt-patient">
                                         {appt.patient_name}
-                                        {appt.priority === "emergency" && (
-                                            <span style={{ color: "#ef4444", fontSize: "0.75rem", marginLeft: 8, fontWeight: 700 }}>
-                                                <FaExclamationTriangle /> EMERGENCY
-                                            </span>
-                                        )}
                                     </h3>
                                     <div className="appt-meta">
                                         <span className="appt-meta-item"><FaCalendarAlt /> {fmtDate(appt.date)}</span>

@@ -23,6 +23,10 @@ const symptomsList = [
   'irritability','muscle_pain','belly_pain'
 ];
 
+const symptomLabels = {
+  sinus_pressure: "headache"
+};
+
 const MAX_SELECTIONS = 5;
 
 const BookAppointment = () => {
@@ -213,7 +217,7 @@ const BookAppointment = () => {
                   <select value={sym} onChange={e => handleChange(i, e.target.value)}>
                     <option value="" disabled>Select symptom</option>
                     {availableSymptoms(i).map((s, j) => (
-                      <option key={j} value={s}>{s.replace(/_/g, " ")}</option>
+                      <option key={j} value={s}>{symptomLabels[s] || s.replace(/_/g, " ")}</option>
                     ))}
                   </select>
                 </div>
@@ -271,7 +275,7 @@ const BookAppointment = () => {
                   <select value={sym} onChange={e => handleChange(i, e.target.value)}>
                     <option value="" disabled>Select symptom</option>
                     {availableSymptoms(i).map((s, j) => (
-                      <option key={j} value={s}>{s.replace(/_/g, " ")}</option>
+                      <option key={j} value={s}>{symptomLabels[s] || s.replace(/_/g, " ")}</option>
                     ))}
                   </select>
                 </div>
@@ -285,6 +289,8 @@ const BookAppointment = () => {
             <button className="book-btn" disabled={chosenCount < 2 || loading} onClick={handlePredict}>
               {loading ? "Predicting…" : "Predict Disease"}
             </button>
+
+            {error && <p className="error-msg">{error}</p>}
           </>
         )}
 
@@ -323,6 +329,8 @@ const BookAppointment = () => {
             <button className="book-btn" style={{ background: "#888", marginTop: 12 }} onClick={() => setStep("symptoms")}>
               ← Back
             </button>
+
+            {error && <p className="error-msg">{error}</p>}
           </div>
         )}
 
@@ -365,6 +373,8 @@ const BookAppointment = () => {
             <button className="book-btn" style={{ background: "#888", marginTop: 8 }} onClick={() => setStep("result")}>
               ← Back
             </button>
+
+            {error && <p className="error-msg">{error}</p>}
           </div>
         )}
 

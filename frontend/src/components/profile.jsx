@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FaExclamationTriangle, FaUserMd, FaHeadset, FaCalendarAlt, FaCheckCircle, FaTimesCircle, FaClock, FaHourglassHalf } from "react-icons/fa";
+import { FaUserMd, FaHeadset, FaCalendarAlt, FaCheckCircle, FaTimesCircle, FaClock, FaHourglassHalf } from "react-icons/fa";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import "./profile.css";
@@ -20,8 +20,13 @@ export default function Dashboard() {
   const [data, setData]               = useState({ email: "", username: "", id: "" });
   const [doctors, setDoctors]         = useState([]);
   const [notifications, setNotifs]    = useState([]);
+  const [dismissedIds, setDismissedIds] = useState(new Set());
   const token = localStorage.getItem("access_token");
   const navigate = useNavigate();
+
+  const handleDismissAppointment = (appointmentId) => {
+    setDismissedIds(prev => new Set(prev).add(appointmentId));
+  };
 
   useEffect(() => {
     if (!token) return;
@@ -51,9 +56,6 @@ export default function Dashboard() {
         {/* ── Left sidebar ── */}
         <div className="left">
           <h1>Quick Links</h1>
-          <button className="ql-btn ql-emergency" onClick={() => navigate("/emergency")}>
-            <FaExclamationTriangle /> Emergency Services
-          </button>
           <button className="ql-btn ql-doctors" onClick={() => navigate("/doctors")}>
             <FaUserMd /> Doctors
           </button>
@@ -65,16 +67,20 @@ export default function Dashboard() {
           {notifications.length > 0 && (
             <>
               <h3 className="sidebar-heading">My Appointments</h3>
-              {notifications.slice(0, 6).map(n => (
+              {notifications.filter(n => !dismissedIds.has(n.id)).slice(0, 6).map(n => (
                 <div key={n.id} className={`notif-card notif-${n.status}`}>
-                  <MdOutlineCancel className="text-danger "style={{ cursor: "pointer", height:"15px"}} />
+                  <MdOutlineCancel 
+                    className="text-danger" 
+                    style={{ cursor: "pointer", height: "15px" }}
+                    onClick={() => handleDismissAppointment(n.id)}
+                    title="Hide from list"
+                  />
                   <div className="notif-icon">{STATUS_ICON[n.status]}</div>
                   <div className="notif-body">
                     <strong>{n.doctor_name}</strong>
                     <span className="notif-date"><FaCalendarAlt /> {n.date} · {n.time_slot}</span>
                     <span className="notif-status">
                       {n.status.charAt(0).toUpperCase() + n.status.slice(1)}
-                      {n.priority === "emergency" && <span className="notif-emg-tag">EMERGENCY</span>}
                     </span>
                     {n.disease && <span className="notif-disease">{n.disease}</span>}
                   </div>

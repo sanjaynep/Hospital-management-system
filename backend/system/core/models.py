@@ -84,7 +84,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Appointment(models.Model):
     PRIORITY_CHOICES = [
         ('normal', 'Normal'),
-        ('emergency', 'Emergency'),
     ]
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -111,7 +110,7 @@ class Appointment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-priority', 'date', 'time_slot']   # emergency first
+        ordering = ['date', 'time_slot']
         # prevent double-booking: same doctor, same date+slot
         unique_together = ['doctor', 'date', 'time_slot']
 

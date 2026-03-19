@@ -361,7 +361,6 @@ body {
 }
 .appt-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(15,23,42,0.10); }
 .appt-expanded { border-left: 3px solid #2563eb; }
-.appt-emergency { border-left: 3px solid #ef4444; background: #fef2f2; }
 
 .appt-avatar {
     width: 48px; height: 48px; flex-shrink: 0;

@@ -125,17 +125,6 @@
   color: #fff;
 }
 
-/* ── emergency toggle ── */
-.emergency-check {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 10px 0;
-  font-weight: 600;
-  color: #c53030;
-  cursor: pointer;
-}
-
 /* ── booking button ── */
 .book-btn {
   width: 100%;

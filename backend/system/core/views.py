@@ -118,7 +118,7 @@ class passwordchangelink(APIView):
         serializer=linkserializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
            return Response({'msg':'password change link sent to your email'}, status=status.HTTP_200_OK)
-        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class resetpasswordview(APIView):
     renderer_classes = [AccountErrorRenderer]

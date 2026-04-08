@@ -143,6 +143,16 @@ REST_FRAMEWORK = {
     )
 }
 
+CELERY_BEAT_SCHEDULE = {
+    'auto-cancel-pending-appointments': {
+        'task': 'core.tasks.auto_cancel_pending_appointments',
+        'schedule': 40,  # run every hour
+    },
+}
+
+CELERY_BROKER_URL = f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/{os.getenv('REDIS_DB')}"
+CELERY_TIMEZONE = 'UTC'
+
 from datetime import timedelta
 ...
 

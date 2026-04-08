@@ -20,13 +20,13 @@ export default function Dashboard() {
   const [data, setData]               = useState({ email: "", username: "", id: "" });
   const [doctors, setDoctors]         = useState([]);
   const [notifications, setNotifs]    = useState([]);
-  const [dismissedIds, setDismissedIds] = useState(new Set());
+  // const [dismissedIds, setDismissedIds] = useState(new Set());
   const token = localStorage.getItem("access_token");
   const navigate = useNavigate();
 
-  const handleDismissAppointment = (appointmentId) => {
-    setDismissedIds(prev => new Set(prev).add(appointmentId));
-  };
+  // const handleDismissAppointment = (appointmentId) => {
+  //   setDismissedIds(prev => new Set(prev).add(appointmentId));
+  // };
 
   useEffect(() => {
     if (!token) return;
@@ -49,6 +49,7 @@ export default function Dashboard() {
   }, [token]);
 
   return (
+    <>
     <div className="page">
       <Dashboard_header />
 
@@ -75,16 +76,16 @@ export default function Dashboard() {
                   }
                   return 0;
                 })
-                .filter(n => !dismissedIds.has(n.id))
+                // .filter(n => !dismissedIds.has(n.id))
                 .slice(0, 6)
                 .map(n => (
                 <div key={n.id} className={`notif-card notif-${n.status}`}>
-                  <MdOutlineCancel 
-                    className="text-danger" 
-                    style={{ cursor: "pointer", height: "15px" }}
-                    onClick={() => handleDismissAppointment(n.id)}
-                    title="Hide from list"
-                  />
+                {/* // < MdOutlineCancel 
+                //     className="text-danger" 
+                //     style={{ cursor: "pointer", height: "15px" }}
+                //     onClick={() => handleDismissAppointment(n.id)}
+                //     title="Hide from list"
+                //   /> */}
                   <div className="notif-icon">{STATUS_ICON[n.status]}</div>
                   <div className="notif-body">
                     <strong>{n.doctor_name}</strong>
@@ -144,5 +145,6 @@ export default function Dashboard() {
 
       <footer className="footer fs-6">©2023 HealthConnect. All rights reserved</footer>
     </div>
+    </>
   );
 }

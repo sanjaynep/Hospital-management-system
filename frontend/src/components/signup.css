@@ -140,11 +140,11 @@
   opacity: 0.65;
   cursor: not-allowed;
 }
+/* alerts haru */
 
-/* ============================
-   ALERTS
-   ============================ */
+
 .alert {
+  margin-top: 5px;
   padding: 12px 16px;
   border-radius: 6px;
   margin-bottom: 15px;
@@ -161,9 +161,7 @@
   color: #721c24;
 }
 
-/* ============================
-   ERROR & SUCCESS TEXT
-   ============================ */
+/* erros haru */
 .error-text,
 .text-danger {
   color: #dc3545;
@@ -176,9 +174,7 @@
   font-size: 0.875rem;
 }
 
-/* ============================
-   LINKS - blue, no underline
-   ============================ */
+/* links */
 a {
   color: var(--link-blue);
   text-decoration: none;

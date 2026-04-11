@@ -1,5 +1,5 @@
 .appointment-container {
-  max-width: 600px;
+  max-width: 640px;
   margin: 40px auto;
   padding: 25px;
   border-radius: 10px;
@@ -34,10 +34,13 @@
   font-weight: 500;
 }
 
-.select-group select {
+.select-group select,
+.select-group input,
+.select-group textarea {
   padding: 8px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  font-size: 0.9rem;
 }
 
 .result-section {
@@ -61,16 +64,68 @@
   font-style: italic;
 }
 
-.doctor-link {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: 500;
+.error-msg {
+  background: #fdecea;
+  color: #c0392b;
+  padding: 8px 14px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  font-weight: 600;
+  text-align: center;
 }
 
-.doctor-link:hover {
-  text-decoration: underline;
+/* ── doctor pick list ── */
+.doctor-pick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+.doctor-pick-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.doctor-pick-card:hover {
+  border-color: #df14df;
+  box-shadow: 0 2px 8px rgba(223,20,223,0.15);
+}
+.doc-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #f194f1; color: #6a006a;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1.2rem; flex-shrink: 0;
 }
 
+/* ── slot grid ── */
+.slot-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+.slot-btn {
+  padding: 6px 14px;
+  border: 2px solid #df14df;
+  border-radius: 20px;
+  background: transparent;
+  color: #df14df;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.slot-btn:hover, .slot-active {
+  background: #df14df;
+  color: #fff;
+}
+
+/* ── booking button ── */
 .book-btn {
   width: 100%;
   margin-top: 15px;
@@ -82,7 +137,10 @@
   font-size: 16px;
   cursor: pointer;
 }
-
-.book-btn:hover {
+.book-btn:hover:not(:disabled) {
   background: #218838;
+}
+.book-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }

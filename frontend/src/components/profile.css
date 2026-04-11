@@ -91,6 +91,118 @@
 
 }
 
+/* ── Quick-link buttons with icons ── */
+.ql-btn {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 10px 14px;
+  transition: background 0.2s, transform 0.1s;
+  cursor: pointer;
+  border: none;
+}
+.ql-btn:hover { transform: translateY(-1px); }
+.ql-emergency { background: #fee2e2 !important; color: #991b1b !important; }
+.ql-emergency:hover { background: #fecaca !important; }
+.ql-doctors { background: #dbeafe !important; color: #1e40af !important; }
+.ql-doctors:hover { background: #bfdbfe !important; }
+.ql-support { background: #e0e7ff !important; color: #3730a3 !important; }
+.ql-support:hover { background: #c7d2fe !important; }
+
+/* ── Sidebar heading ── */
+.sidebar-heading {
+  margin-top: 18px;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* ── Notification cards in sidebar ── */
+.notif-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+  background: #f8fafc;
+  border-left: 3px solid #cbd5e1;
+}
+.notif-confirmed { background: #f0fdf4; border-left-color: #10b981; }
+.notif-cancelled { background: #fef2f2; border-left-color: #ef4444; }
+.notif-pending   { background: #fffbeb; border-left-color: #f59e0b; }
+.notif-completed { background: #eff6ff; border-left-color: #2563eb; }
+
+.notif-icon { flex-shrink: 0; padding-top: 2px; }
+.notif-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; padding-right: 18px; }
+.notif-body strong { font-size: 0.82rem; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.notif-date { font-size: 0.75rem; color: #64748b; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notif-status { font-size: 0.75rem; font-weight: 600; color: #475569; white-space: nowrap; }
+.notif-disease { font-size: 0.72rem; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notif-emg-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  background: #fee2e2;
+  color: #ef4444;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+/* ── Delete button on appointment history cards ── */
+.notif-delete-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 2px;
+  font-size: 0.7rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  transition: background 0.15s;
+}
+.notif-delete-btn:hover {
+  background: #fee2e2;
+}
+
+/* ── Section header row (title + "View All" button) ── */
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.section-header-row h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+.view-all-btn {
+  padding: 5px 14px;
+  border: 2px solid #2563eb;
+  border-radius: 20px;
+  background: transparent;
+  color: #2563eb;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.view-all-btn:hover { background: #2563eb; color: #fff; }
+
 .footer {
   height: 40px;
   background-color: #f194f1;
@@ -132,7 +244,7 @@
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: background 0.2s;
+   
 }
 .book-btn:hover {
     background: #b80fb8;

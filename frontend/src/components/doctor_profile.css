@@ -421,16 +421,17 @@ body {
 .btn-view:hover { background: #dbeafe; }
 
 .btn-approve, .btn-cancel {
-    width: 30px; height: 30px;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+    padding: 6px 14px;
     border: none; border-radius: 8px;
-    font-size: 0.8rem; cursor: pointer;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer;
     transition: background 0.15s, transform 0.1s;
 }
 .btn-approve { background: #d1fae5; color: #065f46; }
-.btn-approve:hover { background: #a7f3d0; transform: scale(1.1); }
+.btn-approve:hover { background: #a7f3d0; transform: scale(1.05); }
 .btn-cancel  { background: #fee2e2; color: #991b1b; }
-.btn-cancel:hover  { background: #fecaca; transform: scale(1.1); }
+.btn-cancel:hover  { background: #fecaca; transform: scale(1.05); }
+.btn-label { font-size: 0.78rem; }
 
 /* ============================================================
    FOOTER

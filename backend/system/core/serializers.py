@@ -1,4 +1,4 @@
-from core.models import User
+from core.models import User, Appointment
 from rest_framework import serializers
 from django.utils.encoding import force_bytes, smart_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -141,3 +141,26 @@ class resetpasswordserializer(serializers.Serializer):
         user.set_password(password) 
         user.save()
         return attrs 
+
+
+# ── Doctor list (lightweight) ─────────────────────────────────
+class DoctorListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'fullname', 'specialization', 'experience', 'profile']
+
+
+# ── Appointment ───────────────────────────────────────────────
+class AppointmentSerializer(serializers.ModelSerializer):
+    patient_name = serializers.CharField(source='patient.fullname', read_only=True)
+    doctor_name  = serializers.CharField(source='doctor.fullname',  read_only=True)
+
+    class Meta:
+        model  = Appointment
+        fields = [
+            'id', 'patient', 'doctor',
+            'patient_name', 'doctor_name',
+            'disease', 'symptoms', 'date', 'time_slot',
+            'priority', 'status', 'reason', 'created_at',
+        ]
+        read_only_fields = ['id', 'patient', 'status', 'created_at']

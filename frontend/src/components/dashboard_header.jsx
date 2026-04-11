@@ -44,9 +44,6 @@ export default function Dashboard_header(){
             <header className='header'>
                 <div className="icons"><FaHeartbeat /><h1>HealthConnect</h1></div>
                 <div className="header-actions">
-                    <button className="notification">
-                        Notifications
-                    </button>
                     <button onClick={handlelogout} className="logout">
                         Logout
                     </button>

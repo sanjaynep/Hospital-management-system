@@ -72,11 +72,7 @@ export default function Signup() {
       <div className="signup-container">
         <p className="head">Create Account</p>
 
-        {message.text && (
-          <div className={`alert ${message.type === "success" ? "alert-success" : "alert-danger"}`}>
-            {message.text}
-          </div>
-        )}
+       
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           {/* Role */}
@@ -242,6 +238,12 @@ export default function Signup() {
           <button type="submit" className="primary-button" disabled={isSubmitting}>
             {isSubmitting ? "Creating account..." : "Create Account"}
           </button>
+
+           {message.text && (
+          <div className={`alert ${message.type === "success" ? "alert-success" : "alert-danger"}`}>
+            {message.text}
+          </div>
+        )}
 
           <p className="mt-3">
             Already have an account? <Link to="/login">Login</Link>

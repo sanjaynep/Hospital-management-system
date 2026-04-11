@@ -1,0 +1,176 @@
+/* ── Doctors List Page ── */
+.dl-container {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 20px;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+.dl-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.dl-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.dl-back:hover { background: #e2e8f0; }
+
+.dl-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Filter bar */
+.dl-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-bottom: 16px;
+}
+.dl-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 160px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0 12px;
+  height: 38px;
+}
+.dl-search-box:focus-within { border-color: #93c5fd; box-shadow: 0 0 0 3px rgba(37,99,235,0.10); }
+.dl-search-icon { color: #94a3b8; font-size: 0.85rem; }
+.dl-search-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.88rem;
+  color: #0f172a;
+  width: 100%;
+}
+
+.dl-spec-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.dl-tab {
+  padding: 6px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.dl-tab:hover { background: #eff6ff; color: #2563eb; border-color: #c7d7f8; }
+.dl-tab-active { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+/* Count */
+.dl-count {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+/* Empty */
+.dl-empty {
+  text-align: center;
+  padding: 48px;
+  color: #94a3b8;
+}
+.dl-empty-icon { font-size: 2.4rem; opacity: 0.4; margin-bottom: 10px; }
+
+/* Doctor grid */
+.dl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.dl-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  border: 1px solid #e8edf3;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.dl-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.10); }
+
+.dl-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.dl-info h4 { margin: 0 0 4px; font-weight: 700; font-size: 1rem; color: #0f172a; }
+.dl-spec { margin: 0 0 2px; font-size: 0.85rem; color: #2563eb; font-weight: 600; }
+.dl-exp { font-size: 0.78rem; color: #64748b; }
+
+.dl-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+.dl-badge-avail {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: #d1fae5;
+  color: #065f46;
+}
+.dl-book-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border: 2px solid #2563eb;
+  border-radius: 10px;
+  background: transparent;
+  color: #2563eb;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.dl-book-btn:hover { background: #2563eb; color: #fff; }
+
+@media (max-width: 540px) {
+  .dl-grid { grid-template-columns: 1fr; }
+  .dl-filter-bar { flex-direction: column; align-items: stretch; }
+  .dl-top-bar { flex-direction: column; align-items: flex-start; }
+}

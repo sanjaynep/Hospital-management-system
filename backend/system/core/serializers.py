@@ -117,7 +117,7 @@ class linkserializer(serializers.Serializer):
             # utils.send_password_reset_email(recipient_email, reset_url)
             send_password_reset_email(user.email, link)
             return attrs
-        raise serializers.ValidationError("you are not a registered User")    
+        raise serializers.ValidationError("You are not a registered User")    
 
 class resetpasswordserializer(serializers.Serializer):           
     password=serializers.CharField(max_length=255, style={'input_type': 'password'}, write_only=True)

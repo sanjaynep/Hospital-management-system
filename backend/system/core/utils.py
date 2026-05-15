@@ -42,13 +42,11 @@ def send_password_reset_email(recipient_email, reset_url):
 
 
 class ModelWiring:
-    # Path to your model file
     MODEL_PATH = os.path.join(os.path.dirname(__file__), "model", "disease_model.pkl")
 
-    # Load once at startup
     model = joblib.load(MODEL_PATH)
 
-    # Full symptom list (must match training order)
+    # Full symptom list
     SYMPTOMS = ['back_pain','constipation','abdominal_pain','diarrhoea','mild_fever','yellow_urine',
         'yellowing_of_eyes','acute_liver_failure','fluid_overload','swelling_of_stomach',
         'swelled_lymph_nodes','malaise','blurred_and_distorted_vision','phlegm','throat_irritation',

@@ -146,7 +146,7 @@ REST_FRAMEWORK = {
 CELERY_BEAT_SCHEDULE = {
     'auto-cancel-pending-appointments': {
         'task': 'core.tasks.auto_cancel_pending_appointments',
-        'schedule': 40,  # run every hour
+        'schedule': 30,  # run every half-hour
     },
 }
 

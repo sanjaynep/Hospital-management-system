@@ -37,10 +37,8 @@ class UserView(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             new_user = serializer.save()
-            # User is inactive by default, send activation email
             uid = urlsafe_base64_encode(force_bytes(new_user.pk))
             token = default_token_generator.make_token(new_user)
-            # Build activation URL (frontend URL that will call the backend activate endpoint)
             activation_url = f"http://localhost:5173/activate/{uid}/{token}/"
             send_activation_email(new_user.email, activation_url)
             return Response({'msg': 'Registration successful. Please check your email to activate your account.'}, status=status.HTTP_201_CREATED)
@@ -133,7 +131,6 @@ class resetpasswordview(APIView):
 
 class PredictDiseaseView(APIView):
     def post(self, request):
-        # Parse JSON body (DRF already parses request.data, so you can skip json.loads)
         selected_symptoms = request.data.get("symptoms", [])
 
         # Run prediction
@@ -200,7 +197,6 @@ class PredictDiseaseView(APIView):
 
         suggested_doctor = doctor_map.get(predicted_disease, "general_physician")
 
-        # Fetch available doctors of that specialization
         doctors_qs = User.objects.filter(
             role='doctor',
             specialization=suggested_doctor,
@@ -215,7 +211,7 @@ class PredictDiseaseView(APIView):
         })
 
 
-# ── 20-minute time slots ────────────────────────────────────────
+# ── 20-minute time slots ──
 ALL_SLOTS = [
     "09:00 AM", "09:20 AM", "09:40 AM",
     "10:00 AM", "10:20 AM", "10:40 AM",
@@ -237,34 +233,8 @@ def _get_free_slots(doctor_id, date):
     return [s for s in ALL_SLOTS if s not in booked]
 
 
-# def _round_robin_doctor(specialization, date):
-#     """
-#     Pick the doctor of `specialization` who has the FEWEST booked
-#     (non-cancelled) slots on `date`.  Ties are broken by doctor id
-#     so the rotation is deterministic (round-robin effect).
-#     """
-#     doctors = User.objects.filter(
-#         role='doctor', specialization=specialization, is_active=True
-#     ).order_by('id')
-#     if not doctors.exists():
-#         return None, []
-
-#     best_doc = None
-#     best_slots = []
-#     fewest_booked = len(ALL_SLOTS) + 1
-
-#     for doc in doctors:
-#         free = _get_free_slots(doc.id, date)
-#         booked = len(ALL_SLOTS) - len(free)
-#         if len(free) > 0 and booked < fewest_booked:
-#             fewest_booked = booked
-#             best_doc = doc
-#             best_slots = free
-
-#     return best_doc, best_slots
 
 
-# ── List doctors (optionally by specialization) ────────────────
 class DoctorListView(APIView):
     """GET /api/user/doctors/?specialization=cardiologist"""
     def get(self, request):
@@ -275,7 +245,6 @@ class DoctorListView(APIView):
         return Response(DoctorListSerializer(qs, many=True).data)
 
 
-# ── Available 20-min slots for a doctor on a date ──────────────
 class AvailableSlotsView(APIView):
     """GET /api/user/doctors/<doctor_id>/slots/?date=2026-02-23"""
     def get(self, request, doctor_id):
@@ -293,7 +262,6 @@ def _auto_complete_past_appointments():
     ).update(status='completed')
 
 
-# ── Create / list appointments ──────────────────────────────────
 class AppointmentView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -342,7 +310,6 @@ class AppointmentView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# ── Doctor approves / cancels an appointment ────────────────────
 class AppointmentStatusView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -376,7 +343,7 @@ class AppointmentStatusView(APIView):
         return Response(AppointmentSerializer(appt).data)
 
 
-# ── Delete appointment (patient only) ──────────────────────────
+# ── Delete appointment patient matra
 class AppointmentDeleteView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -386,7 +353,6 @@ class AppointmentDeleteView(APIView):
         except Appointment.DoesNotExist:
             return Response({'msg': 'Appointment not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        # If active, cancel it first then delete
         if appt.status in ('pending', 'confirmed'):
             appt.status = 'cancelled'
             appt.save()
@@ -395,7 +361,7 @@ class AppointmentDeleteView(APIView):
         return Response({'msg': 'Appointment deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
 
-# ── Patient notifications ───────────────────────────────────────
+# Patient notifications 
 class PatientNotificationsView(APIView):
     permission_classes = [IsAuthenticated]
 

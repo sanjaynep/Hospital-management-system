@@ -59,7 +59,7 @@ class UserSerializer(serializers.ModelSerializer):
                 if not re.search(r'[@$!%*?&]', password):
                     errors.setdefault('password', []).append("Password must contain at least one special character (@$!%*?&)")
 
-        # Role-based checks
+        # Role-based 
         if role == 'doctor':
             required_fields = ['license_no', 'experience', 'specialization']
             for field in required_fields:
@@ -143,14 +143,14 @@ class resetpasswordserializer(serializers.Serializer):
         return attrs 
 
 
-# ── Doctor list (lightweight) ─────────────────────────────────
+# ── Doctor list (lightweight) 
 class DoctorListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'fullname', 'specialization', 'experience', 'profile']
 
 
-# ── Appointment ───────────────────────────────────────────────
+# ── Appointment 
 class AppointmentSerializer(serializers.ModelSerializer):
     patient_name = serializers.CharField(source='patient.fullname', read_only=True)
     doctor_name  = serializers.CharField(source='doctor.fullname',  read_only=True)

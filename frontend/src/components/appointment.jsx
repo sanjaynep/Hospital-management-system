@@ -34,32 +34,26 @@ const BookAppointment = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Doctor passed from doctors_list or profile page
   const preSelectedDoctor = location.state?.doctor || null;
 
-  // ── symptom selection state ──
   const [selectedSymptoms, setSelectedSymptoms] = useState(Array(MAX_SELECTIONS).fill(""));
   const chosenCount = selectedSymptoms.filter(Boolean).length;
 
-  // ── prediction result ──
   const [disease, setDisease]           = useState("");
   const [specialization, setSpec]       = useState("");
   const [doctors, setDoctors]           = useState([]);
 
-  // ── booking form ──
+  
   const [selectedDoctor, setSelectedDoctor] = useState(preSelectedDoctor);
   const [selectedDate, setSelectedDate]     = useState("");
   const [slots, setSlots]                   = useState([]);
   const [selectedSlot, setSelectedSlot]     = useState("");
   const [reason, setReason]                 = useState("");
 
-  // ── UI state ──
-  // If doctor is pre-selected, start on "direct" flow (symptoms + date in one step)
   const [step, setStep]       = useState(preSelectedDoctor ? "direct" : "symptoms");
   const [error, setError]     = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ── helpers ──
   const handleChange = (index, value) => {
     const updated = [...selectedSymptoms];
     updated[index] = value;
@@ -71,7 +65,6 @@ const BookAppointment = () => {
       .filter(s => !selectedSymptoms.includes(s) || selectedSymptoms[index] === s)
       .sort((a, b) => a.replace(/_/g, " ").localeCompare(b.replace(/_/g, " ")));
 
-  // ── REGULAR FLOW Step 1: predict ──
   const handlePredict = async () => {
     setError("");
     setLoading(true);
@@ -89,7 +82,7 @@ const BookAppointment = () => {
     setLoading(false);
   };
 
-  // ── REGULAR FLOW Step 2: pick doctor → load slots ──
+
   const pickDoctor = async (doc) => {
     setSelectedDoctor(doc);
     setSelectedSlot("");
@@ -107,20 +100,20 @@ const BookAppointment = () => {
     } catch { setSlots([]); }
   };
 
-  // ── DIRECT FLOW: predict + book in one step ──
+
   const handleDirectBook = async () => {
     setError("");
     if (!selectedSlot) { setError("Pick a time slot"); return; }
     setLoading(true);
     try {
-      // First predict disease from symptoms
+      
       const chosen = selectedSymptoms.filter(Boolean);
       const predRes = await axios.post(`${API}/predict/`, { symptoms: chosen },
         { headers: { "Content-Type": "application/json" } });
       const predictedDisease = predRes.data.predicted_disease;
       setDisease(predictedDisease);
 
-      // Then book with the pre-selected doctor
+      
       await axios.post(`${API}/appointments/`, {
         doctor: selectedDoctor.id,
         disease: predictedDisease,
@@ -142,7 +135,7 @@ const BookAppointment = () => {
     setLoading(false);
   };
 
-  // ── REGULAR FLOW Step 3: book ──
+  
   const handleBook = async () => {
     setError("");
     if (!selectedSlot) { setError("Pick a time slot"); return; }
@@ -182,7 +175,7 @@ const BookAppointment = () => {
     setError("");
   };
 
-  // ── render ──
+
   return (
     <>
       <Dashboard_header />

@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 @shared_task
 def auto_cancel_pending_appointments():
     try:
-        cutoff = timezone.now() - timedelta(seconds=30)
+        cutoff = timezone.now() - timedelta(seconds=40)
         logger.info(f"Cutoff time: {cutoff}")
         
         appointments = list(Appointment.objects.filter(

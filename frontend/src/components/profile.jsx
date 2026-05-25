@@ -28,6 +28,19 @@ export default function Dashboard() {
   //   setDismissedIds(prev => new Set(prev).add(appointmentId));
   // };
 
+  const handleCancelAppointment = async (appointmentId) => {
+    const shouldCancel = window.confirm("Are you sure you want to cancel this appointment?");
+    if (!shouldCancel) return;
+
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      await axios.delete(`${API}/appointments/${appointmentId}/delete/`, { headers });
+      setNotifs(prev => prev.filter(appointment => appointment.id !== appointmentId));
+    } catch {
+      alert("Unable to cancel the appointment right now. Please try again.");
+    }
+  };
+
   useEffect(() => {
     if (!token) return;
     const headers = { Authorization: `Bearer ${token}` };
@@ -68,7 +81,7 @@ export default function Dashboard() {
           {notifications.length > 0 && (
             <>
               <h3 className="sidebar-heading">My Appointments</h3>
-              {notifications
+              {[...notifications]
                 .sort((a, b) => {
                   // Sort by created_at descending (latest created first)
                   if (a.created_at && b.created_at) {
@@ -80,12 +93,6 @@ export default function Dashboard() {
                 .slice(0, 6)
                 .map(n => (
                 <div key={n.id} className={`notif-card notif-${n.status}`}>
-                {/* // < MdOutlineCancel 
-                //     className="text-danger" 
-                //     style={{ cursor: "pointer", height: "15px" }}
-                //     onClick={() => handleDismissAppointment(n.id)}
-                //     title="Hide from list"
-                //   /> */}
                   <div className="notif-icon">{STATUS_ICON[n.status]}</div>
                   <div className="notif-body">
                     <strong>{n.doctor_name}</strong>
@@ -94,6 +101,17 @@ export default function Dashboard() {
                       {n.status.charAt(0).toUpperCase() + n.status.slice(1)}
                     </span>
                     {n.disease && <span className="notif-disease">{n.disease}</span>}
+                    {n.status !== "cancelled" && n.status !== "completed" && (
+                      <button
+                        type="button"
+                        className="notif-delete-btn"
+                        onClick={() => handleCancelAppointment(n.id)}
+                        title="Cancel appointment"
+                      >
+                        <MdOutlineCancel />
+                        <span>Cancel</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

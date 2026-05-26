@@ -69,7 +69,7 @@
     overflow: hidden; /* keep children's scroll self-contained */
 }
 .main .left {
-    background-color: #f194f1;
+    background-color: #fdd2fd;
     padding: 10px;
     overflow-y: auto;
 }
@@ -197,7 +197,7 @@
 
 .footer {
   height: 40px;
-  background-color: #f194f1;
+  background-color: #bd90bd;
   color: rgb(27, 25, 25);
   display: flex;
   justify-content: center;

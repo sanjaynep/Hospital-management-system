@@ -69,7 +69,7 @@
     overflow: hidden; /* keep children's scroll self-contained */
 }
 .main .left {
-    background-color: #f194f1;
+    background-color: #fdd2fd;
     padding: 10px;
     overflow-y: auto;
 }
@@ -81,7 +81,7 @@
     position: static;
     width: auto;
 }
-.main .left button{
+.main .left button:not(.notif-delete-btn){
     width:100%;
     margin-top: 5px;
     margin-bottom: 5px;
@@ -140,42 +140,34 @@
 .notif-completed { background: #eff6ff; border-left-color: #2563eb; }
 
 .notif-icon { flex-shrink: 0; padding-top: 2px; }
-.notif-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; padding-right: 18px; }
+.notif-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .notif-body strong { font-size: 0.82rem; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 .notif-date { font-size: 0.75rem; color: #64748b; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .notif-status { font-size: 0.75rem; font-weight: 600; color: #475569; white-space: nowrap; }
 .notif-disease { font-size: 0.72rem; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.notif-emg-tag {
-  display: inline-block;
-  margin-left: 6px;
-  padding: 1px 6px;
-  background: #fee2e2;
-  color: #ef4444;
-  border-radius: 4px;
-  font-size: 0.65rem;
-  font-weight: 700;
-}
 
 /* ── Delete button on appointment history cards ── */
 .notif-delete-btn {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: none;
-  border: none;
-  color: #ef4444;
-  cursor: pointer;
-  padding: 2px;
-  font-size: 0.7rem;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 3px;
-  transition: background 0.15s;
+    position: static;
+    align-self: flex-start;
+    margin-top: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    max-width: 100%;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    cursor: pointer;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    line-height: 1;
+    transition: background 0.15s, transform 0.15s;
 }
 .notif-delete-btn:hover {
-  background: #fee2e2;
+    background: #fecaca;
+    transform: translateY(-1px);
 }
 
 /* ── Section header row (title + "View All" button) ── */
@@ -205,7 +197,7 @@
 
 .footer {
   height: 40px;
-  background-color: #f194f1;
+  background-color: #bd90bd;
   color: rgb(27, 25, 25);
   display: flex;
   justify-content: center;

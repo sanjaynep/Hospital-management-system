@@ -376,14 +376,12 @@ const BookAppointment = () => {
           <div className="result-section" style={{ textAlign: "center" }}>
             <h3 style={{ color: "#10b981" }}>Appointment Booked!</h3>
             <p>Your appointment with <strong>{selectedDoctor?.fullname}</strong> on <strong>{selectedDate}</strong> at <strong>{selectedSlot}</strong> is pending doctor confirmation.</p>
-            <button className="book-btn" onClick={resetForm}>
-              Book Another
+            <button className="book-btn" onClick={() => navigate("/profile")}>
+              GO back
             </button>
           </div>
         )}
       </div>
-
-      <footer className="footer fs-6">©2023 HealthConnect. All rights reserved</footer>
     </>
   );
 };

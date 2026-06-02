@@ -133,10 +133,9 @@ class PredictDiseaseView(APIView):
     def post(self, request):
         selected_symptoms = request.data.get("symptoms", [])
 
-        # Run prediction
+    
         prediction_code = ModelWiring.predict(selected_symptoms)
 
-        # Map numeric code back to disease name
         disease_map = {
             0:'Fungal infection',1:'Allergy',2:'GERD',3:'Chronic cholestasis',4:'Drug Reaction',
             5:'Peptic ulcer diseae',6:'AIDS',7:'Diabetes ',8:'Gastroenteritis',9:'Bronchial Asthma',
@@ -211,7 +210,6 @@ class PredictDiseaseView(APIView):
         })
 
 
-# ── 20-minute time slots ──
 ALL_SLOTS = [
     "09:00 AM", "09:20 AM", "09:40 AM",
     "10:00 AM", "10:20 AM", "10:40 AM",
@@ -320,14 +318,12 @@ class AppointmentStatusView(APIView):
                 {'msg': 'Only doctors can update appointment status.'},
                 status=status.HTTP_403_FORBIDDEN,
             )
-
-        # Check the appointment exists at all
         try:
             appt = Appointment.objects.get(pk=pk)
         except Appointment.DoesNotExist:
             return Response({'msg': 'Appointment not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Ensure this doctor owns the appointment
+        # doctor owns the appointment
         if appt.doctor_id != request.user.id:
             return Response(
                 {'msg': 'You are not the assigned doctor for this appointment.'},

@@ -41,7 +41,7 @@ export default function ActivateAccount() {
 
                         {status === "success" && (
                             <>
-                                <h1 style={{ color: "#28a745" }}>✓ Account Activated!</h1>
+                                <h1 style={{ color: "#28a745" }}> Account Activated!</h1>
                                 <p className="mt-4">{message}</p>
                                 <Link to="/login" className="btn btn-primary mt-3">Go to Login</Link>
                             </>

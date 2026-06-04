@@ -69,12 +69,12 @@
     overflow: hidden; /* keep children's scroll self-contained */
 }
 .main .left {
-    background-color: #fdd2fd;
+    background-color: #cececfee;
     padding: 10px;
     overflow-y: auto;
 }
 .main .right {
-    background: rgb(237, 243, 237);
+    background-color: #e7e7ecee;
     padding: 16px;
     overflow-y: auto;
     /* override the generic .right { position:absolute } that would break the grid */
@@ -91,7 +91,7 @@
 
 }
 
-/* ── Quick-link buttons with icons ── */
+
 .ql-btn {
   display: flex !important;
   align-items: center;
@@ -121,7 +121,7 @@
   color: #1e293b;
 }
 
-/* ── Notification cards in sidebar ── */
+
 .notif-card {
   position: relative;
   display: flex;
@@ -170,7 +170,7 @@
     transform: translateY(-1px);
 }
 
-/* ── Section header row (title + "View All" button) ── */
+
 .section-header-row {
   display: flex;
   align-items: center;
@@ -197,7 +197,7 @@
 
 .footer {
   height: 40px;
-  background-color: #bd90bd;
+  background-color: #069b1a;
   color: rgb(27, 25, 25);
   display: flex;
   justify-content: center;
@@ -205,7 +205,7 @@
   flex-shrink: 0;
 }
 
-/* ── Welcome banner ─────────────────────────────────────── */
+
 .profile-banner {
     display: flex;
     align-items: center;

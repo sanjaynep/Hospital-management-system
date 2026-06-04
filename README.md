@@ -10,6 +10,8 @@ This Hospital Management System is designed to streamline hospital operations by
 - **Appointment Scheduling**: Book and manage patient appointments
 - **Medical Records**: Store and retrieve patient medical history
 - **User Authentication**: Secure login for different user roles
+- **Background Tasks**: Async processing with Celery
+- **Caching**: Redis for performance optimization
 
 ## 📊 Technology Stack
 
@@ -20,23 +22,144 @@ This Hospital Management System is designed to streamline hospital operations by
 | **CSS** | User interface styling | 20.9% |
 | **HTML** | Frontend markup & structure | 2.3% |
 
+### Backend Services:
+- **Django**: Web framework
+- **Redis**: Caching & message broker
+- **Celery**: Async task queue
+- **PostgreSQL/SQLite**: Database
+
 ## 📁 Project Structure
 
 ```
 Hospital-management-system/
-├── backend/              # Python backend (Flask/Django)
-│   ├── models/          # Database models
-│   ├── routes/          # API endpoints
+├── backend/                        # Python Django backend
+│   └── system/
+│       ├── dockerfile              # Docker configuration
+│       ├── docker-compose.yml       # Docker Compose configuration
+│       ├── requirements.txt         # Python dependencies
+│       ├── manage.py               # Django management
+│       ├── models/                 # Database models
+│       ├── routes/                 # API endpoints
+│       └── ...
+├── frontend/                       # JavaScript frontend
+│   ├── static/                     # CSS and assets
+│   ├── templates/                  # HTML templates
 │   └── ...
-├── frontend/            # JavaScript frontend
-│   ├── static/          # CSS and assets
-│   ├── templates/       # HTML templates
-│   └── ...
-├── TEST_IMPROVEMENTS.md # Testing refactoring documentation
-└── README.md           # This file
+├── TEST_IMPROVEMENTS.md            # Testing refactoring documentation
+└── README.md                       # This file
 ```
 
-## 🚀 Getting Started
+## 🚀 Quick Start with Docker (Recommended ⭐)
+
+### Prerequisites
+
+- [Docker](https://www.docker.com/get-started) installed
+- [Docker Compose](https://docs.docker.com/compose/install/) installed
+- Git
+
+### Installation & Running
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/sanjaynep/Hospital-management-system.git
+   cd Hospital-management-system
+   ```
+
+2. **Configure environment variables**
+   ```bash
+   # Create .env file in backend/system directory
+   cp backend/system/.env.example backend/system/.env  # if available
+   # OR create it manually with necessary variables
+   ```
+
+3. **Start all services with Docker Compose**
+   ```bash
+   docker-compose -f backend/system/docker-compose.yml up -d
+   ```
+
+   This will start:
+   - **Django Server**: http://localhost:8000
+   - **Redis**: Port 6379 (internal)
+   - **Celery Worker**: Background tasks
+   - **Celery Beat**: Scheduled tasks
+
+4. **View running containers**
+   ```bash
+   docker-compose -f backend/system/docker-compose.yml ps
+   ```
+
+5. **Stop all services**
+   ```bash
+   docker-compose -f backend/system/docker-compose.yml down
+   ```
+
+### Docker Compose Services
+
+| Service | Image | Port | Purpose |
+|---------|-------|------|---------|
+| **redis** | redis:latest | 6379 | Caching & message broker |
+| **djangoproject** | django-img | 8000 | Main Django web server |
+| **celery** | django-img | - | Background task worker |
+| **celery-beat** | django-img | - | Scheduled task scheduler |
+
+### Docker Commands Reference
+
+```bash
+# Start services in background (detached mode)
+docker-compose -f backend/system/docker-compose.yml up -d
+
+# View logs from all services
+docker-compose -f backend/system/docker-compose.yml logs -f
+
+# View logs for specific service
+docker-compose -f backend/system/docker-compose.yml logs -f djangoproject
+
+# Follow logs in real-time
+docker-compose -f backend/system/docker-compose.yml logs -f
+
+# Stop services
+docker-compose -f backend/system/docker-compose.yml down
+
+# Stop and remove volumes (careful: deletes data!)
+docker-compose -f backend/system/docker-compose.yml down -v
+
+# Restart services
+docker-compose -f backend/system/docker-compose.yml restart
+
+# Execute commands in running container
+docker-compose -f backend/system/docker-compose.yml exec djangoproject python manage.py createsuperuser
+
+# Build images without caching
+docker-compose -f backend/system/docker-compose.yml build --no-cache
+
+# View resource usage
+docker-compose -f backend/system/docker-compose.yml stats
+
+# Scale services
+docker-compose -f backend/system/docker-compose.yml up -d --scale celery=3
+```
+
+### Common Docker Troubleshooting
+
+```bash
+# Check if containers are running
+docker-compose -f backend/system/docker-compose.yml ps
+
+# View detailed logs for debugging
+docker-compose -f backend/system/docker-compose.yml logs --tail=100
+
+# Remove all containers and volumes (clean start)
+docker-compose -f backend/system/docker-compose.yml down -v
+docker-compose -f backend/system/docker-compose.yml up -d
+
+# Rebuild images if changes were made
+docker-compose -f backend/system/docker-compose.yml build
+docker-compose -f backend/system/docker-compose.yml up -d
+```
+
+---
+
+## 🔧 Manual Setup (Without Docker)
 
 ### Prerequisites
 
@@ -54,7 +177,8 @@ Hospital-management-system/
 
 2. **Set up the Backend**
    ```bash
-   cd backend
+   cd backend/system
+   
    # Create a virtual environment
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
@@ -63,28 +187,42 @@ Hospital-management-system/
    pip install -r requirements.txt
    
    # Run migrations
+   python manage.py makemigrations
    python manage.py migrate
    ```
 
 3. **Set up the Frontend**
    ```bash
-   cd ../frontend
+   cd ../../frontend
    # Install any dependencies if needed
    npm install  # or yarn install
    ```
 
-4. **Start the Development Server**
+4. **Start Services**
    ```bash
-   # Terminal 1: Backend
-   cd backend
-   python manage.py runserver
+   # Terminal 1: Backend Django Server
+   cd backend/system
+   python manage.py runserver 0.0.0.0:8000
    
-   # Terminal 2: Frontend
+   # Terminal 2: Celery Worker
+   cd backend/system
+   python -m celery -A system worker --loglevel=info
+   
+   # Terminal 3: Celery Beat
+   cd backend/system
+   python -m celery -A system beat --loglevel=info
+   
+   # Terminal 4: Redis (if not running)
+   redis-server
+   
+   # Terminal 5: Frontend
    cd frontend
    # Serve using your preferred method
    ```
 
 The application should now be accessible at `http://localhost:8000`
+
+---
 
 ## 📚 Features
 
@@ -125,6 +263,19 @@ The project follows comprehensive unit testing best practices. See [TEST_IMPROVE
 
 ### Running Tests
 
+**With Docker:**
+```bash
+# Run all tests
+docker-compose -f backend/system/docker-compose.yml exec djangoproject python manage.py test core.tests.test_model
+
+# Run specific test class
+docker-compose -f backend/system/docker-compose.yml exec djangoproject python manage.py test core.tests.test_model.UserModelCreationTest
+
+# Run with verbose output
+docker-compose -f backend/system/docker-compose.yml exec djangoproject python manage.py test core.tests.test_model -v 2
+```
+
+**Without Docker:**
 ```bash
 # Run all tests
 python manage.py test core.tests.test_model
@@ -152,6 +303,8 @@ python manage.py test core.tests.test_model -v 2
 - CSRF protection
 - Input validation and sanitization
 - Secure session management
+- Environment variable protection for sensitive data
+- Containerized security with Docker
 
 ## 🤝 Contributing
 
@@ -183,6 +336,7 @@ For complete API documentation, refer to the backend API specification.
 - [ ] SMS alerts for appointments
 - [ ] Mobile app version
 - [ ] Advanced analytics dashboard
+- [ ] Frontend documentation
 
 ## 📄 License
 
@@ -200,6 +354,7 @@ For questions or support, please reach out to the project maintainer:
 - Thanks to all contributors
 - Built with modern web technologies
 - Inspired by best practices in hospital management systems
+- Docker containerization for easy deployment and consistency
 
 ---
 

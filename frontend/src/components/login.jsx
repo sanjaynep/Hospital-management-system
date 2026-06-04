@@ -28,7 +28,7 @@ export default function Login() {
       });
 
       const token = response.data.token;
-      const role = response.data.user.role;
+      const role = response.data.user. role;
       if (token && token.access) {
         localStorage.setItem("access_token", token.access);
         localStorage.setItem("refresh_token", token.refresh);

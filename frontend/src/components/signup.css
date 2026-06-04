@@ -32,9 +32,6 @@
   }
 }
 
-/* ============================
-   PAGE HEADING
-   ============================ */
 .head {
   font-size: 1.5rem;
   font-weight: 600;
@@ -43,9 +40,7 @@
   text-align: center;
 }
 
-/* ============================
-   FORM LABELS
-   ============================ */
+
 .form-label {
   display: block;
   margin-bottom: 6px;
@@ -53,9 +48,7 @@
   color: var(--text-dark);
 }
 
-/* ============================
-   FORM FIELDS
-   ============================ */
+
 .field-row {
   margin-bottom: 15px;
 }
@@ -92,9 +85,7 @@
   cursor: pointer;
 }
 
-/* ============================
-   PASSWORD WRAPPER
-   ============================ */
+
 .password-wrapper {
   position: relative;
   width: 100%;

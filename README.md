@@ -165,7 +165,6 @@ docker-compose -f backend/system/docker-compose.yml up -d
 
 - Python 3.8+
 - Node.js (if needed for frontend dependencies)
-- Redis server running locally
 - Git
 
 ### Installation
@@ -256,12 +255,6 @@ The application should now be accessible at `http://localhost:8000`
   - Store patient medical history
   - Prescription tracking
   - Treatment records
-  - Report generation
-
-- **Background Processing**
-  - Celery for async tasks
-  - Scheduled tasks with Celery Beat
-  - Email notifications
   - Report generation
 
 ## 🧪 Testing
